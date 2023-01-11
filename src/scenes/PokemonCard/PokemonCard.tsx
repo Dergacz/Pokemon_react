@@ -1,28 +1,38 @@
 import React, { FC } from 'react';
-import { IPokemon } from './PokemonCard.types';
+import { IPokemonCard } from './PokemonCard.types';
 import { Card } from '@nextui-org/react';
+import { pokemonTypes } from '../../utils/pokemonTypes';
 
-export const PokemonCard: FC<IPokemon> = ({
-  name,
-}) => {
+export const PokemonCard: FC<IPokemonCard> = ({ name, pokemon }) => {
+  const [{ color }] = pokemonTypes.filter(
+    (type) => type?.name === pokemon?.types[0]?.type?.name,
+  );
+
   return (
     <Card
-      className="pokemon-card-wrapper"
+      className='pokemon-card-wrapper'
+      style={{ borderColor: `${color}` }}
       isPressable
     >
-      <Card.Header className="pokemon-card-id-wrapper">
-        <span>#001</span>
+      <Card.Header
+        className='pokemon-card-id-wrapper'
+        style={{ color: `${color}` }}
+      >
+        <span>#{String(pokemon.id).padStart(3, '0')}</span>
       </Card.Header>
-      <Card.Body style={{ width: 'auto' }}>
+      <Card.Body style={{ width: 'auto', padding: '3px' }}>
         <Card.Image
-          src="https://assets.pokemon.com/assets/cms2/img/pokedex/full/004.png"
-          objectFit="cover"
-          width="100%"
-          height="100%"
+          src={pokemon.sprites.front_default}
+          objectFit='cover'
+          width='100%'
+          height='100%'
         />
       </Card.Body>
-      <Card.Footer className="pokemon-card-footer">
-        <span className="pokemon-card-name">{name}</span>
+      <Card.Footer
+        className='pokemon-card-footer'
+        style={{ backgroundColor: `${color}`, padding: '6px' }}
+      >
+        <span className='pokemon-card-name'>{name}</span>
       </Card.Footer>
     </Card>
   );

@@ -1,40 +1,30 @@
 import React, { FC } from 'react';
-import { pokemonApi } from '../../services/PokemonServiceApi';
 import { PokemonCard } from '../PokemonCard/PokemonCard';
 import { Grid, Loading } from '@nextui-org/react';
 import { Link } from 'react-router-dom';
+import { useAppSelector } from '../../hooks/hooks';
 
 export const PokemonList: FC = () => {
-  const { data: pokemons, isLoading } = pokemonApi.useFetchAllPokemonQuery(9);
+  const { pokemons, pokemonsArray, isLoading } = useAppSelector(
+    (state) => state.pokemonReducer
+  );
 
   return (
-    <div className="pokemon-list-wrapper">
-      {
-        isLoading && (
-          <Loading size="xl" />
-        )
-      }
-      <Grid.Container gap={2}>
-        {
-          !isLoading && pokemons.results.map(pokemon => {
+    <div className='pokemon-list-wrapper'>
+      {isLoading && <Loading size='xl' />}
+      <Grid.Container gap={2} style={{ justifyContent: 'space-between' }}>
+        {!isLoading &&
+          pokemons &&
+          pokemonsArray.map((pokemon) => {
             return (
-              <Grid
-                xs={4}
-                key={pokemon.url}
-              >
+              <Grid xs={4} key={pokemon.id} style={{ flexBasis: '0' }}>
                 <Link to={pokemon.name}>
-                  <PokemonCard
-                    name={pokemon.name}
-                    url={pokemon.url}
-                  />
+                  <PokemonCard name={pokemon.name} pokemon={pokemon} />
                 </Link>
               </Grid>
             );
-          })
-        }
+          })}
       </Grid.Container>
     </div>
   );
 };
-
-
