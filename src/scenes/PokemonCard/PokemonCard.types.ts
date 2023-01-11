@@ -1,4 +1,6 @@
-export interface IPokemon {
+import { IPokemon } from '../../models/models';
+
+export interface IPokemonCard {
   name: string;
-  url: string;
+  pokemon: IPokemon;
 }
