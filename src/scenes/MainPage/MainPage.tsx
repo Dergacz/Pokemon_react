@@ -1,21 +1,49 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { PokemonList } from '../PokemonList/PokemonList';
 import Header from '../../components/Header/Header';
 import { Input, Pagination } from '@nextui-org/react';
+import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
+import { fetchPokemon, fetchPokemons } from '../../reducers/actionCreaters';
 
 export const MainPage: FC = () => {
+  const dispatch = useAppDispatch();
+  const { pokemons, pokemonsArray } = useAppSelector(
+    (state) => state.pokemonReducer
+  );
+
+  useEffect(() => {
+    dispatch(fetchPokemons());
+  }, []);
+
+  useEffect(() => {
+    if (pokemons && pokemonsArray.length < 9) {
+      pokemons.results.map((pokemon) => {
+        dispatch(fetchPokemon(pokemon.name));
+      });
+    }
+  }, [pokemons, pokemons && pokemons.next]);
+
+  const count = pokemons && pokemons.count;
+  const nextPokemonsHandler = (page: number) => {
+    dispatch(fetchPokemons(page));
+  };
+
   return (
     <>
-      <Header/>
+      <Header />
       <Input
-        className="main-page-search"
-        width="100%"
+        className='main-page-search'
+        width='100%'
         bordered
-        placeholder="search pokemon"
+        placeholder='search pokemon'
       />
       <PokemonList />
-      <footer className="main-page-pagination">
-        <Pagination total={20} initialPage={1} />
+      <footer className='main-page-pagination'>
+        <Pagination
+          total={Math.ceil(count / 9)}
+          initialPage={1}
+          onChange={(page) => nextPokemonsHandler(page - 1)}
+        />
       </footer>
     </>
   );
