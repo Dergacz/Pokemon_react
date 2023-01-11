@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
-
-const logo = require('../../../public/images/Pokeball.png');
+import logo from '../../../public/images/Pokeball.png';
 
 const Header: FC = () => {
   return (

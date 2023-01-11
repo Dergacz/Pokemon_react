@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-
-const arrowLogo = require('../../../public/images/arrow.png');
+import arrowLogo from '../../../public/images/arrow.png';
 
 const Pokemon: FC = () => {
   const { title } = useParams();
