@@ -23,19 +23,29 @@ body {
   text-align: center;
 }
 
+.pokemon-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+}
+
 .pokemon-card-wrapper {
-  border: 1px solid #F57D31;
+  max-height: 210px;
+  width: 150px !important;
+  border: 1px solid #FFFFFF;
 }
 .pokemon-card-id-wrapper {
   justify-content: end !important;
   padding-bottom: 0 !important;
-  color: #F57D31 !important;
+  line-height: 12px;
 }
 .pokemon-card-footer {
   width: auto;
   display: flex;
   justify-content: center;
-  background-color: #F57D31;
+  background-color: #FFFFFF;
 }
 .pokemon-card-name {
   color: #FFFFFF;
@@ -45,14 +55,16 @@ body {
 }
 
 .pokemon-container {
+  width: 500px;
   height: 640px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  background-color: #F57D31;
   border-radius: 16px;
   position: relative;
+  background: url("../images/opacity_pokeball.png") no-repeat 95% 3%;
 }
 .pokemon-header {
   display: flex;
@@ -80,7 +92,7 @@ body {
 }
 .pokemon-stats {
   background-color: #FFFFFF;
-  border: 4px solid #F57D31;
+  border: 4px solid #FFFFFF;
   border-radius: 8px;
   width: 100%;
   height: 412px;
@@ -89,13 +101,17 @@ body {
   flex-direction: column;
   align-items: center;
 }
+.pokemon-spell-wrapper {
+  display: flex;
+}
 .pokemon-spell {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 2px 8px;
-  background-color: #F57D31;
+  background-color: #FFFFFF;
   border-radius: 15px;
+  margin-left: 10px;
 }
 .pokemon-spell-name {
   color: #FFFFFF;
@@ -104,20 +120,43 @@ body {
 .pokemon-spell-name:first-letter {
   text-transform: uppercase;
 }
+.pokemon-spell:first-child {
+  margin-left: 0;
+}
 .pokemon-about-title {
   margin-top: 16px;
-  color: #F57D31;
+  color: #FFFFFF;
 }
 .pokemon-about-wrapper {
   margin-top: 16px;
   display: flex;
   justify-content: space-between;
-  width: 261px;
+  width: 300px;
+}
+.pokemon-about-argument {
+  text-align: center;
+  padding: 5px 5px 5px 16px;
+  border-left: 1px solid #E0E0E0;
+}
+.pokemon-about-argument:first-child {
+  border: none;
+}
+.pokemon-about-height, .pokemon-about-weight {
+  margin-left: 5px;
+}
+.pokemon-about-description {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
 }
 .pokemon-about-subtitle {
   font-weight: 400;
   font-size: 12px;
   color: #666666;
+}
+.pokemon-about-ability:first-letter {
+  text-transform: uppercase;
 }
 .pokemon-description {
   margin-top: 16px;

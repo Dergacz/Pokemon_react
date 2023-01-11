@@ -1,19 +1,21 @@
 .pokemon-card {
   &-wrapper {
-    border: 1px solid $fire;
+    max-height: 210px;
+    width: 150px !important;
+    border: 1px solid $white;
   }
 
   &-id-wrapper {
     justify-content: end !important;
     padding-bottom: 0 !important;
-    color: $fire !important;
+    line-height: 12px;
   }
 
   &-footer {
     width: auto;
     display: flex;
     justify-content: center;
-    background-color: $fire;
+    background-color: $white;
   }
 
   &-name {
