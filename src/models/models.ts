@@ -40,3 +40,11 @@ export interface IPokemon {
   sprites: ISprites;
   types: ITypes[];
 }
+
+export interface IPokemonSpecies {
+  name: string;
+  color: {
+    name: string;
+    url: string;
+  }
+}

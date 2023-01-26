@@ -1,9 +1,10 @@
-import { IFetchPokemons, IPokemon } from '../models/models';
+import { IFetchPokemons, IPokemon, IPokemonSpecies } from '../models/models';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface IPokemonState {
   pokemons: IFetchPokemons | null;
   pokemonsArray: IPokemon[];
+  pokemonsSpecies: IPokemonSpecies[];
   isLoading: boolean;
   error: string;
 }
@@ -11,6 +12,7 @@ interface IPokemonState {
 const initialState: IPokemonState = {
   pokemons: null,
   pokemonsArray: [],
+  pokemonsSpecies: [],
   isLoading: false,
   error: '',
 };
@@ -25,8 +27,13 @@ export const pokemonSlice = createSlice({
       state.isLoading = false;
     },
     fetchPokemonSuccess(state, action: PayloadAction<IPokemon>) {
-      state.pokemonsArray = [...state.pokemonsArray, action.payload];
-      state.pokemonsArray.sort((a, b) => (a.id > b.id ? 1 : -1));
+      const pokemonsSort = [...state.pokemonsArray, action.payload].sort((a, b) => (a.id > b.id ? 1 : -1));
+      state.pokemonsArray = pokemonsSort;
+      state.isLoading = false;
+    },
+    fetchPokemonSpeciesSuccess(state, action: PayloadAction<IPokemonSpecies>) {
+      state.pokemonsSpecies = [...state.pokemonsSpecies, action.payload];
+      state.error = '';
       state.isLoading = false;
     },
     pokemonsPending(state) {
