@@ -1,26 +1,23 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppSelector } from '../../hooks/hooks';
-import { pokemonTypes } from '../../utils/pokemonTypes';
 import weightLogo from '../../../public/images/weight.png';
 import heightLogo from '../../../public/images/height.png';
 import arrowLogo from '../../../public/images/arrow.png';
+import defaultPokemon from '../../../public/images/pokemon-default.png';
 
 const Pokemon: FC = () => {
-  const { pokemonsArray } = useAppSelector((state) => state.pokemonReducer);
+  const { pokemonsArray, pokemonsSpecies } = useAppSelector((state) => state.pokemonReducer);
   const { title } = useParams();
   const navigate = useNavigate();
 
   const goBack = () => navigate(-1);
 
-  const pokemon = pokemonsArray.find((p) => p.name === title);
-
-  const [{ color }] = pokemonTypes.filter(
-    (type) => type?.name === pokemon?.types[0]?.type?.name
-  );
+  const pokemonSpecies = useMemo(() => pokemonsSpecies.find((p) => p.name === title), [title]);
+  const pokemon = useMemo(() => pokemonsArray.find((p) => p.name === title), [title]);
 
   return (
-    <div className='pokemon-container' style={{ backgroundColor: `${color}` }}>
+    <div className={`pokemon-container background-${pokemonSpecies?.color.name || 'default'}`}>
       <div className='pokemon-header'>
         <div>
           <img
@@ -39,27 +36,23 @@ const Pokemon: FC = () => {
       </div>
       <img
         className='pokemon-img'
-        src={pokemon.sprites.front_default}
+        src={pokemon.sprites.front_default || defaultPokemon}
         alt='pokemon'
       />
-      <div className='pokemon-stats' style={{ borderColor: `${color}` }}>
+      <div className={`pokemon-stats border-${pokemonSpecies?.color.name || 'default'}`}>
         <div className='pokemon-spell-wrapper'>
           {pokemon.types.map((type) => {
-            const colorName = pokemonTypes.find(
-              (colorType) => colorType?.name === type.type.name
-            );
             return (
               <div
                 key={type.type.name}
-                className='pokemon-spell'
-                style={{ backgroundColor: `${colorName.color}` }}
+                className={`pokemon-spell background-${pokemonSpecies?.color.name || 'default'}`}
               >
                 <span className='pokemon-spell-name'>{type.type.name}</span>
               </div>
             );
           })}
         </div>
-        <h3 className='pokemon-about-title' style={{ color: `${color}` }}>
+        <h3 className={`pokemon-about-title color-${pokemonSpecies?.color.name || 'default'}`}>
           About
         </h3>
         <div className='pokemon-about-wrapper'>
@@ -81,7 +74,6 @@ const Pokemon: FC = () => {
             {pokemon.abilities.map((ability) => {
               return <p className='pokemon-about-ability'>{ability.ability.name}</p>;
             })}
-
             <p className='pokemon-about-subtitle'>Movies</p>
           </div>
         </div>
