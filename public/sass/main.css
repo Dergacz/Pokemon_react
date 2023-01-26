@@ -1,3 +1,135 @@
+.background-black {
+  background-color: black;
+}
+
+.color-black {
+  color: black;
+}
+
+.border-black {
+  border-color: black !important;
+}
+
+.background-blue {
+  background-color: blue;
+}
+
+.color-blue {
+  color: blue;
+}
+
+.border-blue {
+  border-color: blue !important;
+}
+
+.background-brown {
+  background-color: brown;
+}
+
+.color-brown {
+  color: brown;
+}
+
+.border-brown {
+  border-color: brown !important;
+}
+
+.background-gray {
+  background-color: gray;
+}
+
+.color-gray {
+  color: gray;
+}
+
+.border-gray {
+  border-color: gray !important;
+}
+
+.background-green {
+  background-color: green;
+}
+
+.color-green {
+  color: green;
+}
+
+.border-green {
+  border-color: green !important;
+}
+
+.background-pink {
+  background-color: pink;
+}
+
+.color-pink {
+  color: pink;
+}
+
+.border-pink {
+  border-color: pink !important;
+}
+
+.background-purple {
+  background-color: purple;
+}
+
+.color-purple {
+  color: purple;
+}
+
+.border-purple {
+  border-color: purple !important;
+}
+
+.background-red {
+  background-color: red;
+}
+
+.color-red {
+  color: red;
+}
+
+.border-red {
+  border-color: red !important;
+}
+
+.background-white {
+  background-color: #9AD6DF;
+}
+
+.color-white {
+  color: #9AD6DF;
+}
+
+.border-white {
+  border-color: #9AD6DF !important;
+}
+
+.background-yellow {
+  background-color: yellow;
+}
+
+.color-yellow {
+  color: yellow;
+}
+
+.border-yellow {
+  border-color: yellow !important;
+}
+
+.background-default {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.color-default {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.border-default {
+  border-color: rgba(0, 0, 0, 0.4) !important;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -28,7 +160,8 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 80vh;
+  max-height: 100%;
+  padding: 40px 0;
 }
 
 .pokemon-card-wrapper {
@@ -64,7 +197,9 @@ body {
   justify-content: space-between;
   border-radius: 16px;
   position: relative;
-  background: url("../images/opacity_pokeball.png") no-repeat 95% 3%;
+  background-image: url("../images/opacity_pokeball.png");
+  background-repeat: no-repeat;
+  background-position: 95% 3%;
 }
 .pokemon-header {
   display: flex;
@@ -92,7 +227,7 @@ body {
 }
 .pokemon-stats {
   background-color: #FFFFFF;
-  border: 4px solid #FFFFFF;
+  border: 4px solid;
   border-radius: 8px;
   width: 100%;
   height: 412px;
@@ -109,7 +244,6 @@ body {
   justify-content: center;
   align-items: center;
   padding: 2px 8px;
-  background-color: #FFFFFF;
   border-radius: 15px;
   margin-left: 10px;
 }
@@ -125,7 +259,6 @@ body {
 }
 .pokemon-about-title {
   margin-top: 16px;
-  color: #FFFFFF;
 }
 .pokemon-about-wrapper {
   margin-top: 16px;
