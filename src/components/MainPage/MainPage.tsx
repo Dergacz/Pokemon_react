@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { PokemonList } from '../PokemonList/PokemonList';
-import Header from '../Header/Header';
 import { Input, Pagination } from '@nextui-org/react';
+import { Header } from '../Header/Header';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 import {
   fetchPokemon,
