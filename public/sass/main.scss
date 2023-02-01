@@ -1,10 +1,12 @@
-@import 'abstarcts/_variables';
+@import 'abstarcts/variables';
+@import 'abstarcts/colors';
 
 @import 'base/normalize';
 
 @import 'pages/app';
 @import 'pages/main-page';
+@import 'pages/pokemon-list';
 @import 'pages/pokemon-card';
 @import 'pages/pokemon';
 
-@import 'components/_header';
+@import 'components/header';

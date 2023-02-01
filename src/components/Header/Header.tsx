@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import logo from '../../../public/images/Pokeball.png';
 
-const Header: FC = () => {
+export const Header: FC = () => {
   return (
     <div className="header-wrapper">
       <img 
@@ -13,5 +13,3 @@ const Header: FC = () => {
     </div>
   );
 };
-
-export default Header;
