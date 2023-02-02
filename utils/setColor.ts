@@ -1,0 +1,11 @@
+import * as constants from '../src/constants/constatns';
+
+export const setColor = (color: string) => {
+  if (color === constants.WHITE) {
+    return constants.ICE_COLOR;
+  }
+  if (color) {
+    return color;
+  }
+  return constants.DEFAULT_COLOR;
+};
