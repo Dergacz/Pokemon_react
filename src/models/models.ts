@@ -16,19 +16,19 @@ interface ISprites {
 
 interface ITypes {
   slot: number;
-  type: {
-    name: string;
-    url: string;
-  }
+  type: IPokemonPreview;
 }
 
 interface IAbilities {
-  ability: {
-    name: string;
-    url: string;
-  };
+  ability: IPokemonPreview;
   is_hidden: boolean;
   slot: number;
+}
+
+interface IStats {
+  base_stat: number;
+  effort: number;
+  stat: IPokemonPreview;
 }
 
 export interface IPokemon {
@@ -36,6 +36,7 @@ export interface IPokemon {
   name: string;
   height: number;
   weight: number;
+  stats: IStats[];
   abilities: IAbilities[];
   sprites: ISprites;
   types: ITypes[];
@@ -43,8 +44,27 @@ export interface IPokemon {
 
 export interface IPokemonSpecies {
   name: string;
-  color: {
-    name: string;
+  color: IPokemonPreview;
+}
+
+export interface IEvolvesTo {
+  species: IPokemonPreview;
+  evolves_to: IEvolvesTo[];
+}
+
+export interface IEvolutionChain {
+  species: IPokemonPreview;
+  evolves_to: IEvolvesTo[];
+}
+
+export interface IFetchEvolutionChain {
+  id: number;
+  chain: IEvolutionChain;
+}
+
+export interface IFetchPokemonSpecies {
+  name: string;
+  evolution_chain: {
     url: string;
   }
 }
