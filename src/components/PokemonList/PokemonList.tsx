@@ -1,18 +1,28 @@
 import React, { FC } from 'react';
-import { PokemonCard } from '../PokemonCard/PokemonCard';
 import { Grid, Loading } from '@nextui-org/react';
 import { Link } from 'react-router-dom';
+
+// components
+import { PokemonCard } from '../PokemonCard/PokemonCard';
+
+// hooks
 import { useAppSelector } from '../../hooks/hooks';
 
 export const PokemonList: FC = () => {
-  const { pokemons, pokemonsArray, pokemonsSpecies, isLoading } = useAppSelector(
+  const { pokemons, pokemonsArray, pokemonsSpecies, isLoading, error } = useAppSelector(
     (state) => state.pokemonReducer
   );
 
   return (
     <div className='pokemon-list-wrapper'>
       {isLoading && <Loading size='xl' />}
-      <Grid.Container gap={2} css={{ justifyContent: 'space-between' }}>
+      <Grid.Container
+        gap={2}
+        css={{
+          justifyContent:
+            error || pokemonsArray.length === 1 ? 'center' : 'space-between',
+        }}
+      >
         {!isLoading &&
           pokemons &&
           pokemonsArray.map((pokemon) => {
@@ -25,6 +35,7 @@ export const PokemonList: FC = () => {
               </Grid>
             );
           })}
+        {error && <h2>Invalid pokemon name</h2>}
       </Grid.Container>
     </div>
   );

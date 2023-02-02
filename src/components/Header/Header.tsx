@@ -1,4 +1,6 @@
 import React, { FC } from 'react';
+
+// images
 import logo from '../../../public/images/Pokeball.png';
 
 export const Header: FC = () => {
