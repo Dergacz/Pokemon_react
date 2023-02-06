@@ -57,15 +57,15 @@ export const fetchPokemonEvolutionChain = (name: string) => async (dispatch: Dis
     const evolutionPokemon = [];
     const response = await instance.get<IFetchPokemonSpecies>(`/pokemon-species/${name}`);
     if (response) {
-      const test = await instance.get<IFetchEvolutionChain>(response.data.evolution_chain.url);
-      const pokemon1 = await instance.get(`/pokemon/${test.data.chain.species.name}`);
+      const evolutionChain = await instance.get<IFetchEvolutionChain>(response.data.evolution_chain.url);
+      const pokemon1 = await instance.get(`/pokemon/${evolutionChain.data.chain.species.name}`);
       evolutionPokemon.push(pokemon1.data);
-      if (test.data.chain?.evolves_to[0]?.species?.name) {
-        const pokemon2 = await instance.get(`/pokemon/${test.data.chain.evolves_to[0].species.name}`);
+      if (evolutionChain.data.chain?.evolves_to[0]?.species?.name) {
+        const pokemon2 = await instance.get(`/pokemon/${evolutionChain.data.chain.evolves_to[0].species.name}`);
         evolutionPokemon.push(pokemon2.data);
       }
-      if (test.data.chain?.evolves_to[0]?.evolves_to[0]?.species?.name) {
-        const pokemon3 = await instance.get(`/pokemon/${test.data.chain.evolves_to[0].evolves_to[0].species.name}`);
+      if (evolutionChain.data.chain?.evolves_to[0]?.evolves_to[0]?.species?.name) {
+        const pokemon3 = await instance.get(`/pokemon/${evolutionChain.data.chain.evolves_to[0].evolves_to[0].species.name}`);
         evolutionPokemon.push(pokemon3.data);
       }
     }
