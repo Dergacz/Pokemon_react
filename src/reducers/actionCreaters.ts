@@ -1,7 +1,7 @@
 import { Dispatch } from '@reduxjs/toolkit';
 import { pokemonSlice } from './pokemonSlice';
 import axios from 'axios';
-import { IFetchEvolutionChain, IFetchPokemons, IFetchPokemonSpecies, IPokemon, IPokemonSpecies } from '../models/models';
+import { IEvolvesTo, IFetchEvolutionChain, IFetchPokemons, IPokemon, IPokemonSpecies } from '../models/models';
 
 const instance = axios.create({
   baseURL: 'https://pokeapi.co/api/v2',
@@ -51,22 +51,32 @@ export const fetchSearchPokemon = (name: string) => async (dispatch: Dispatch) =
   }
 };
 
-export const fetchPokemonEvolutionChain = (name: string) => async (dispatch: Dispatch) => {
+export const fetchPokemonEvolutionChain = (name: string, url: string = '') => async (dispatch: Dispatch) => {
   try {
     dispatch(pokemonSlice.actions.pokemonsPending());
     const evolutionPokemon = [];
-    const response = await instance.get<IFetchPokemonSpecies>(`/pokemon-species/${name}`);
-    if (response) {
-      const evolutionChain = await instance.get<IFetchEvolutionChain>(response.data.evolution_chain.url);
-      const pokemon1 = await instance.get(`/pokemon/${evolutionChain.data.chain.species.name}`);
-      evolutionPokemon.push(pokemon1.data);
-      if (evolutionChain.data.chain?.evolves_to[0]?.species?.name) {
-        const pokemon2 = await instance.get(`/pokemon/${evolutionChain.data.chain.evolves_to[0].species.name}`);
-        evolutionPokemon.push(pokemon2.data);
-      }
-      if (evolutionChain.data.chain?.evolves_to[0]?.evolves_to[0]?.species?.name) {
-        const pokemon3 = await instance.get(`/pokemon/${evolutionChain.data.chain.evolves_to[0].evolves_to[0].species.name}`);
-        evolutionPokemon.push(pokemon3.data);
+    if (url) {
+      const evolutionChain = await instance.get<IFetchEvolutionChain>(url);
+      const handleNameSpecies = (evolves: IEvolvesTo) => {
+        const { species, evolves_to: evolvesTo, evolution_details: evolutionDetails } = evolves;
+        let namesPokemons = [
+          {
+            name: species.name,
+            level: 0,
+          },
+        ];
+        if (evolutionDetails.length) {
+          namesPokemons[0].level = evolutionDetails[0].min_level;
+        }
+        evolvesTo.forEach((evolve: IEvolvesTo) => {
+          namesPokemons = namesPokemons.concat(handleNameSpecies(evolve));
+        });
+        return namesPokemons;
+      };
+      const pokemons = handleNameSpecies(evolutionChain.data.chain);
+      for (let i = 0; i < pokemons.length; i++) {
+        const pokemon = await instance.get(`/pokemon/${pokemons[i].name}`);
+        evolutionPokemon.push(pokemon.data);
       }
     }
     dispatch(pokemonSlice.actions.fetchPokemonEvolutionChainSuccess(evolutionPokemon));

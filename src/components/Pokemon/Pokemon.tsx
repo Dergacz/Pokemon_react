@@ -51,7 +51,7 @@ export const Pokemon: FC = () => {
 
   useEffect(() => {
     dispatch(fetchPokemonSpecies(title));
-    dispatch(fetchPokemonEvolutionChain(title));
+    dispatch(fetchPokemonEvolutionChain(title, pokemonSpecies?.evolution_chain.url));
   }, [title]);
 
   const onChangePokemonDescription = () => {

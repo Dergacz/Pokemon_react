@@ -45,16 +45,26 @@ export interface IPokemon {
 export interface IPokemonSpecies {
   name: string;
   color: IPokemonPreview;
+  evolution_chain: {
+    url: string;
+  }
+}
+
+export interface IEvolutionDetails {
+  min_level: number;
+  trigger: IPokemonPreview;
 }
 
 export interface IEvolvesTo {
   species: IPokemonPreview;
   evolves_to: IEvolvesTo[];
+  evolution_details: IEvolutionDetails[];
 }
 
 export interface IEvolutionChain {
   species: IPokemonPreview;
   evolves_to: IEvolvesTo[];
+  evolution_details: IEvolutionDetails[];
 }
 
 export interface IFetchEvolutionChain {
