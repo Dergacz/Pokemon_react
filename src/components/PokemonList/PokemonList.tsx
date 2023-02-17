@@ -14,7 +14,7 @@ export const PokemonList: FC = () => {
   );
 
   return (
-    <div className='pokemon-list-wrapper'>
+    <div className='pokemon-list-wrapper' style={{ minHeight: '723px' }}>
       {isLoading && <Loading size='xl' />}
       <Grid.Container
         gap={2}
@@ -25,10 +25,11 @@ export const PokemonList: FC = () => {
       >
         {!isLoading &&
           pokemons &&
+          !error &&
           pokemonsArray.map((pokemon) => {
             const pokemonSpecies = pokemonsSpecies?.find(p => p.name === pokemon.name);
             return (
-              <Grid xs={4} key={pokemon.id} css={{ flexBasis: '0' }}>
+              <Grid xs={4} key={pokemon.id} css={{ justifyContent: 'center' }}>
                 <Link to={pokemon.name}>
                   <PokemonCard name={pokemon.name} pokemon={pokemon} pokemonSpecies={pokemonSpecies} />
                 </Link>
