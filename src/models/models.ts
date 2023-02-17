@@ -1,5 +1,5 @@
 
-interface IPokemonPreview {
+export interface IPokemonPreview {
   name: string;
   url: string;
 }
@@ -10,8 +10,19 @@ export interface IFetchPokemons {
   results: IPokemonPreview[];
 }
 
+interface IFrontTypes {
+  front_default: string;
+  front_shiny: string;
+}
+
 interface ISprites {
   front_default: string;
+  front_shiny: string;
+  other: {
+    dream_world: IFrontTypes;
+    home: IFrontTypes;
+    'official-artwork': IFrontTypes;
+  }
 }
 
 interface ITypes {
@@ -53,6 +64,7 @@ export interface IPokemonSpecies {
 export interface IEvolutionDetails {
   min_level: number;
   trigger: IPokemonPreview;
+  held_item: IPokemonPreview;
 }
 
 export interface IEvolvesTo {

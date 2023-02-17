@@ -6,6 +6,7 @@ import { IPokemonEvolution } from './PokemonEvolution.types';
 
 // images
 import arrowLogo from '../../../public/images/arrow-evolution.png';
+import defaultPokemon from '../../../public/images/pokemon-default.png';
 
 export const PokemonEvolutions: FC<IPokemonEvolution> = ({
   pokemonEvolutionChain,
@@ -24,7 +25,7 @@ export const PokemonEvolutions: FC<IPokemonEvolution> = ({
           <div>
             <div className='evolution-pokemon'>
               <Link to={`/${pokemon.name}`}>
-                <img src={pokemon.sprites.front_default} alt='pokemon-front' />
+                <img src={pokemon.sprites.other['official-artwork'].front_default || defaultPokemon} alt='pokemon-front' width={75} height={75}/>
               </Link>
               <p className='evolution-name'>{pokemon.name}</p>
             </div>

@@ -21,21 +21,21 @@ export const PokemonCard: FC<IPokemonCard> = ({
   return (
     <Card
       className='pokemon-card-wrapper'
-      css={{ borderColor: `${setColor(color)}` }}
+      css={{ borderColor: `${setColor(color)}`, width: '150px' }}
       isPressable
     >
       <Card.Header
         className='pokemon-card-id-wrapper'
-        css={{ color: `${setColor(color)}` }}
+        css={{ color: `${setColor(color)}`, justifyContent: 'end', paddingBottom: '0' }}
       >
         <span>#{String(pokemon.id).padStart(3, '0')}</span>
       </Card.Header>
       <Card.Body css={{ width: 'auto', padding: '3px' }}>
         <Card.Image
-          src={pokemon.sprites.front_default || defaultPokemon}
-          objectFit='cover'
-          width='100%'
-          height='100%'
+          src={pokemon.sprites?.other['official-artwork'].front_default || defaultPokemon}
+          objectFit='contain'
+          width='130px'
+          height='140px'
         />
       </Card.Body>
       <Card.Footer

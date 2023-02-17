@@ -82,7 +82,7 @@ export const PokemonStats: FC<IPokemonStats> = ({ pokemon, color }) => (
               <div className='pokemon-stats-progress'>
                 <Progress
                   size='sm'
-                  max={200}
+                  max={280}
                   value={stat.base_stat}
                   css={{
                     $$progressColor: `${setColor(color)}`,

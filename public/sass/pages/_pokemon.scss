@@ -1,4 +1,11 @@
 .pokemon {
+
+  &-wrapper {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+
   &-container {
     width: 500px;
     height: 670px;
@@ -30,10 +37,7 @@
     margin-left: 16px;
     font-weight: 700;
     font-size: 24px;
-
-    :first-letter {
-      text-transform: uppercase;
-    }
+    text-transform: capitalize;
   }
 
   &-img {
@@ -41,6 +45,10 @@
     top: 87px;
     width: 200px;
     height: 200px;
+  }
+
+  &-pointer {
+    cursor: pointer;
   }
 
   &-buttons-wrapper {

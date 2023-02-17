@@ -1,7 +1,7 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 
 // components
-import { Input, Pagination } from '@nextui-org/react';
+import { Dropdown, Input, Pagination } from '@nextui-org/react';
 import { PokemonList } from '../PokemonList/PokemonList';
 import { Header } from '../Header/Header';
 
@@ -10,29 +10,34 @@ import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 
 // actions
 import {
-  clearPokemonsArray,
+  clearError,
   fetchPokemon,
   fetchPokemons,
   fetchPokemonSpecies,
+  fetchPokemonType,
+  fetchPokemonTypes,
   fetchSearchPokemon,
-} from '../../reducers/actionCreaters';
+  setCurrentPage,
+} from '../../actions/actionCreaters';
 
 export const MainPage: FC = () => {
   const dispatch = useAppDispatch();
-  const { pokemons, pokemonsArray } = useAppSelector(
+  const { pokemons, pokemonsArray, currentPage, pokemonTypes } = useAppSelector(
     (state) => state.pokemonReducer
   );
 
   const [searchPokemon, setSearchPokemon] = useState<string>('');
+  const [selectedType, setSelectedType] = useState<any>('');
 
   useEffect(() => {
-    if (!searchPokemon) {
-      dispatch(fetchPokemons());
+    if (pokemonsArray.length < 9) {
+      dispatch(fetchPokemonTypes());
+      dispatch(fetchPokemons(currentPage));
     }
-  }, [fetchPokemons, searchPokemon]);
+  }, []);
 
   useEffect(() => {
-    if (pokemons && pokemonsArray.length === 0) {
+    if (pokemons && !pokemonsArray.length) {
       pokemons.results.map((pokemon) => {
         dispatch(fetchPokemon(pokemon.name));
         dispatch(fetchPokemonSpecies(pokemon.name));
@@ -47,13 +52,19 @@ export const MainPage: FC = () => {
       }, 700);
       return () => clearTimeout(getData);
     } else {
-      dispatch(clearPokemonsArray());
+      dispatch(clearError());
     }
   }, [searchPokemon]);
 
   const count = pokemons?.count;
   const changePokemonsPageHandler = (page: number) => {
+    dispatch(setCurrentPage(page));
     dispatch(fetchPokemons(page));
+  };
+
+  const setSelectedTypeHandler = (keys: any) => {
+    dispatch(fetchPokemonType(keys.currentKey));
+    setSelectedType(keys.currentKey);
   };
 
   return (
@@ -66,12 +77,33 @@ export const MainPage: FC = () => {
         placeholder='Search pokemon'
         onChange={(e) => setSearchPokemon(e.target.value)}
       />
+      <Dropdown>
+        <Dropdown.Button
+          flat
+          color='primary'
+          css={{ tt: 'uppercase', margin: '10px auto 0 auto' }}
+        >
+          Filter by type
+        </Dropdown.Button>
+        <Dropdown.Menu
+          aria-label='Single selection actions'
+          color='primary'
+          disallowEmptySelection
+          selectionMode='single'
+          selectedKeys={selectedType}
+          onSelectionChange={(keys: any) => setSelectedTypeHandler(keys)}
+        >
+          {useMemo(() => pokemonTypes?.map((type) => {
+            return <Dropdown.Item key={type.name}>{type.name}</Dropdown.Item>;
+          }), [pokemonTypes])}
+        </Dropdown.Menu>
+      </Dropdown>
       <PokemonList />
       <footer className='main-page-pagination'>
         {!searchPokemon && (
           <Pagination
             total={Math.ceil(count / 9)}
-            initialPage={1}
+            initialPage={currentPage + 1}
             onChange={(page) => changePokemonsPageHandler(page - 1)}
           />
         )}

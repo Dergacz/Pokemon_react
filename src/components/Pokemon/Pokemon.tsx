@@ -1,9 +1,4 @@
-import React, {
-  FC,
-  useEffect,
-  useState,
-  useMemo,
-} from 'react';
+import React, { FC, useEffect, useState, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 // components
@@ -16,8 +11,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 // actions
 import {
   fetchPokemonEvolutionChain,
-  fetchPokemonSpecies,
-} from '../../reducers/actionCreaters';
+} from '../../actions/actionCreaters';
 
 // images
 import arrowChange from '../../../public/images/arrow_right.png';
@@ -31,81 +25,107 @@ export const Pokemon: FC = () => {
   const { title } = useParams();
 
   const pokemonSpecies = useMemo(
-    () => pokemonsSpecies.find((p) => p.name === title),
+    () => pokemonsSpecies?.find((p) => p.name === title),
     [title]
   );
 
-  const pokemon = useMemo(
-    () => pokemonsArray.find((p) => p.name === title),
+  const pokemonFromArray = useMemo(
+    () => pokemonsArray?.find((p) => p.name === title),
     [title]
   );
 
-  const [color, setColor] = useState(pokemonSpecies?.color.name);
+  const pokemonFromEvolutionChain = useMemo(
+    () => pokemonEvolutionChain?.find((p) => p.name === title),
+    [title]
+  );
+
+  const pokemon = pokemonFromArray || pokemonFromEvolutionChain;
+
+  const { front_shiny: frontShiny = '', front_default: frontDefault } =
+    pokemon.sprites?.other?.['official-artwork'];
+
+  const [color, setColor] = useState<string>(pokemonSpecies?.color.name);
   const [isPokemonStats, setIsPokemonStats] = useState<boolean>(true);
+  const [isShinyColor, setIsShinyColor] = useState<boolean>(false);
 
   useEffect(() => {
     if (color) {
       setColor(pokemonSpecies?.color.name);
     }
-  }, [color]);
+  }, [pokemonSpecies?.color.name]);
 
   useEffect(() => {
-    dispatch(fetchPokemonSpecies(title));
     dispatch(fetchPokemonEvolutionChain(title, pokemonSpecies?.evolution_chain.url));
-  }, [title]);
+  }, []);
 
   const onChangePokemonDescription = () => {
     setIsPokemonStats(!isPokemonStats);
   };
 
+  const setPokemonImage = () => {
+    if (!frontShiny && !frontDefault) {
+      return defaultPokemon;
+    }
+    if (isShinyColor) {
+      return frontShiny;
+    }
+    return frontDefault;
+  };
+
   return (
-    <div className={`pokemon-container background-${color || 'default'}`}>
-      <div className='pokemon-header'>
-        <div>
-          <Link to='/'>
-            <img
-              className='pokemon-arrow'
-              src={arrowLogo}
-              alt='back-arrow'
-              width={16}
-              height={16}
-            />
-          </Link>
-          <span className='pokemon-name'>{pokemon.name}</span>
+    <div
+      className='pokemon-wrapper'
+      style={{ height: '100vh', display: 'flex', alignItems: 'center' }}
+    >
+      <div className={`pokemon-container background-${color || 'default'}`}>
+        <div className='pokemon-header'>
+          <div>
+            <Link to='/'>
+              <img
+                className='pokemon-arrow'
+                src={arrowLogo}
+                alt='back-arrow'
+                width={16}
+                height={16}
+              />
+            </Link>
+            <span className='pokemon-name'>{pokemon.name}</span>
+          </div>
+          <span className='pokemon-id'>
+            #{String(pokemon.id).padStart(3, '0')}
+          </span>
         </div>
-        <span className='pokemon-id'>
-          #{String(pokemon.id).padStart(3, '0')}
-        </span>
-      </div>
-      <img
-        className='pokemon-img'
-        src={pokemon.sprites.front_default || defaultPokemon}
-        alt='pokemon'
-      />
-      {pokemonEvolutionChain.length && (
-        <div className='pokemon-buttons-wrapper'>
-          <img
-            className='pokemon-arrow-change'
-            src={arrowChange}
-            alt='arrow-right'
-            onClick={onChangePokemonDescription}
-          />
-          <img
-            className='pokemon-arrow-change'
-            src={arrowChange}
-            alt='arrow-right'
-            onClick={onChangePokemonDescription}
-          />
-        </div>
-      )}
-      {isPokemonStats ? (
-        <PokemonStats pokemon={pokemon} color={color} />
-      ) : (
-        <PokemonEvolutions
-          pokemonEvolutionChain={pokemonEvolutionChain}
-          color={color}
+        <img
+          className={`pokemon-img ${frontShiny && 'pokemon-pointer'}`}
+          src={setPokemonImage()}
+          alt='pokemon'
+          onClick={() => setIsShinyColor(frontShiny && !isShinyColor)}
         />
-      )}
+        {!!pokemonEvolutionChain.length && (
+          <div className='pokemon-buttons-wrapper'>
+            <img
+              className='pokemon-arrow-change'
+              src={arrowChange}
+              alt='arrow-right'
+              onClick={onChangePokemonDescription}
+            />
+            <img
+              className='pokemon-arrow-change'
+              src={arrowChange}
+              alt='arrow-right'
+              onClick={onChangePokemonDescription}
+            />
+          </div>
+        )}
+        {isPokemonStats ? (
+          <PokemonStats pokemon={pokemon} color={color} />
+        ) : (
+          <PokemonEvolutions
+            pokemonEvolutionChain={pokemonEvolutionChain}
+            color={color}
+          />
+        )}
+      </div>
     </div>
   );
 };
