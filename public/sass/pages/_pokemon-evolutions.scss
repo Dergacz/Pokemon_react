@@ -1,0 +1,39 @@
+.evolution {
+  &-wrapper {
+    background-color: $white;
+    border: 4px solid $white;
+    border-radius: 8px;
+    width: 100%;
+    height: 442px;
+    padding: 56px 20px 44px 20px;
+  }
+
+  &-title {
+    text-align: center;
+  }
+
+  &-chain {
+    height: 75%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  &-level {
+    display: flex;
+    align-items: center;
+  }
+
+  &-arrow {
+    transform: rotate(180deg);
+  }
+
+  &-pokemon {
+    text-align: center;
+  }
+
+  &-name {
+    text-transform: capitalize;
+  }
+}

@@ -1,13 +1,10 @@
 .pokemon-card {
   &-wrapper {
     max-height: 210px;
-    width: 150px !important;
     border: 1px solid $white;
   }
 
   &-id-wrapper {
-    justify-content: end !important;
-    padding-bottom: 0 !important;
     line-height: 12px;
   }
 
@@ -20,9 +17,6 @@
 
   &-name {
     color: $white;
-  }
-
-  &-name:first-letter {
-    text-transform: uppercase;
+    text-transform: capitalize;
   }
 }

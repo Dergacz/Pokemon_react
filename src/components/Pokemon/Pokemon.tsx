@@ -1,85 +1,131 @@
-import React, { FC, useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useAppSelector } from '../../hooks/hooks';
-import weightLogo from '../../../public/images/weight.png';
-import heightLogo from '../../../public/images/height.png';
+import React, { FC, useEffect, useState, useMemo } from 'react';
+import { Link, useParams } from 'react-router-dom';
+
+// components
+import { PokemonStats } from '../PokemonStats/PokemonStats';
+import { PokemonEvolutions } from '../PokemonEvolutions/PokemonEvolutions';
+
+// hooks
+import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
+
+// actions
+import {
+  fetchPokemonEvolutionChain,
+} from '../../actions/actionCreaters';
+
+// images
+import arrowChange from '../../../public/images/arrow_right.png';
 import arrowLogo from '../../../public/images/arrow.png';
 import defaultPokemon from '../../../public/images/pokemon-default.png';
 
-const Pokemon: FC = () => {
-  const { pokemonsArray, pokemonsSpecies } = useAppSelector((state) => state.pokemonReducer);
+export const Pokemon: FC = () => {
+  const dispatch = useAppDispatch();
+  const { pokemonsArray, pokemonEvolutionChain, pokemonsSpecies } =
+    useAppSelector((state) => state.pokemonReducer);
   const { title } = useParams();
-  const navigate = useNavigate();
 
-  const goBack = () => navigate(-1);
+  const pokemonSpecies = useMemo(
+    () => pokemonsSpecies?.find((p) => p.name === title),
+    [title]
+  );
 
-  const pokemonSpecies = useMemo(() => pokemonsSpecies.find((p) => p.name === title), [title]);
-  const pokemon = useMemo(() => pokemonsArray.find((p) => p.name === title), [title]);
+  const pokemonFromArray = useMemo(
+    () => pokemonsArray?.find((p) => p.name === title),
+    [title]
+  );
+
+  const pokemonFromEvolutionChain = useMemo(
+    () => pokemonEvolutionChain?.find((p) => p.name === title),
+    [title]
+  );
+
+  const pokemon = pokemonFromArray || pokemonFromEvolutionChain;
+
+  const { front_shiny: frontShiny = '', front_default: frontDefault } =
+    pokemon.sprites?.other?.['official-artwork'];
+
+  const [color, setColor] = useState<string>(pokemonSpecies?.color.name);
+  const [isPokemonStats, setIsPokemonStats] = useState<boolean>(true);
+  const [isShinyColor, setIsShinyColor] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (color) {
+      setColor(pokemonSpecies?.color.name);
+    }
+  }, [pokemonSpecies?.color.name]);
+
+  useEffect(() => {
+    dispatch(fetchPokemonEvolutionChain(title, pokemonSpecies?.evolution_chain.url));
+  }, []);
+
+  const onChangePokemonDescription = () => {
+    setIsPokemonStats(!isPokemonStats);
+  };
+
+  const setPokemonImage = () => {
+    if (!frontShiny && !frontDefault) {
+      return defaultPokemon;
+    }
+    if (isShinyColor) {
+      return frontShiny;
+    }
+    return frontDefault;
+  };
 
   return (
-    <div className={`pokemon-container background-${pokemonSpecies?.color.name || 'default'}`}>
-      <div className='pokemon-header'>
-        <div>
-          <img
-            className='pokemon-arrow'
-            src={arrowLogo}
-            alt='back-arrow'
-            width={16}
-            height={16}
-            onClick={goBack}
+    <div
+      className='pokemon-wrapper'
+      style={{ height: '100vh', display: 'flex', alignItems: 'center' }}
+    >
+      <div className={`pokemon-container background-${color || 'default'}`}>
+        <div className='pokemon-header'>
+          <div>
+            <Link to='/'>
+              <img
+                className='pokemon-arrow'
+                src={arrowLogo}
+                alt='back-arrow'
+                width={16}
+                height={16}
+              />
+            </Link>
+            <span className='pokemon-name'>{pokemon.name}</span>
+          </div>
+          <span className='pokemon-id'>
+            #{String(pokemon.id).padStart(3, '0')}
+          </span>
+        </div>
+        <img
+          className={`pokemon-img ${frontShiny && 'pokemon-pointer'}`}
+          src={setPokemonImage()}
+          alt='pokemon'
+          onClick={() => setIsShinyColor(frontShiny && !isShinyColor)}
+        />
+        {!!pokemonEvolutionChain.length && (
+          <div className='pokemon-buttons-wrapper'>
+            <img
+              className='pokemon-arrow-change'
+              src={arrowChange}
+              alt='arrow-right'
+              onClick={onChangePokemonDescription}
+            />
+            <img
+              className='pokemon-arrow-change'
+              src={arrowChange}
+              alt='arrow-right'
+              onClick={onChangePokemonDescription}
+            />
+          </div>
+        )}
+        {isPokemonStats ? (
+          <PokemonStats pokemon={pokemon} color={color} />
+        ) : (
+          <PokemonEvolutions
+            pokemonEvolutionChain={pokemonEvolutionChain}
+            color={color}
           />
-          <span className='pokemon-name'>{title}</span>
-        </div>
-        <span className='pokemon-id'>
-          #{String(pokemon.id).padStart(3, '0')}
-        </span>
-      </div>
-      <img
-        className='pokemon-img'
-        src={pokemon.sprites.front_default || defaultPokemon}
-        alt='pokemon'
-      />
-      <div className={`pokemon-stats border-${pokemonSpecies?.color.name || 'default'}`}>
-        <div className='pokemon-spell-wrapper'>
-          {pokemon.types.map((type) => {
-            return (
-              <div
-                key={type.type.name}
-                className={`pokemon-spell background-${pokemonSpecies?.color.name || 'default'}`}
-              >
-                <span className='pokemon-spell-name'>{type.type.name}</span>
-              </div>
-            );
-          })}
-        </div>
-        <h3 className={`pokemon-about-title color-${pokemonSpecies?.color.name || 'default'}`}>
-          About
-        </h3>
-        <div className='pokemon-about-wrapper'>
-          <div className='pokemon-about-argument'>
-            <div className='pokemon-about-description'>
-              <img src={weightLogo} alt="weight"/>
-              <p className='pokemon-about-weight'>{pokemon.weight / 10} kg</p>
-            </div>
-            <p className='pokemon-about-subtitle'>Weight</p>
-          </div>
-          <div className='pokemon-about-argument'>
-            <div className='pokemon-about-description'>
-              <img src={heightLogo} alt="height"/>
-              <p className='pokemon-about-height'>{pokemon.height / 10} m</p>
-            </div>
-            <p className='pokemon-about-subtitle'>Height</p>
-          </div>
-          <div className='pokemon-about-argument'>
-            {pokemon.abilities.map((ability) => {
-              return <p className='pokemon-about-ability'>{ability.ability.name}</p>;
-            })}
-            <p className='pokemon-about-subtitle'>Movies</p>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
 };
-
-export default Pokemon;
