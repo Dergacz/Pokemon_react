@@ -1,4 +1,4 @@
-import * as constants from '../src/constants/constatns';
+import * as constants from '../src/constants/constants';
 
 export const setColor = (color: string) => {
   if (color === constants.WHITE) {
