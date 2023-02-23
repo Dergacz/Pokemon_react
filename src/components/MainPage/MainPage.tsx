@@ -1,9 +1,16 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 
 // components
-import { Dropdown, Input, Pagination } from '@nextui-org/react';
+import { Button, Dropdown, Input, Pagination } from '@nextui-org/react';
 import { PokemonList } from '../PokemonList/PokemonList';
 import { Header } from '../Header/Header';
+
+// types
+import { IPokemonTypes } from '../../models/models';
+import { Selection } from '@react-types/shared';
+
+// constants
+import * as constants from '../../constants/constants';
 
 // hooks
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
@@ -11,33 +18,70 @@ import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 // actions
 import {
   clearError,
+  clearPokemonType,
   fetchPokemon,
+  fetchPokemonByType,
   fetchPokemons,
-  fetchPokemonSpecies,
-  fetchPokemonType,
   fetchPokemonTypes,
-  fetchSearchPokemon,
   setCurrentPage,
-} from '../../actions/actionCreaters';
+} from '../../actions/pokemonAction';
+import { fetchPokemonSpecies } from '../../actions/pokemonSpeciesAction';
+import { fetchSearchPokemon } from '../../actions/searchPokemonAction';
 
 export const MainPage: FC = () => {
   const dispatch = useAppDispatch();
-  const { pokemons, pokemonsArray, currentPage, pokemonTypes } = useAppSelector(
-    (state) => state.pokemonReducer
-  );
+  const {
+    pokemons,
+    pokemonsArray,
+    currentPage,
+    pokemonTypes,
+    pokemonCurrentType,
+  } = useAppSelector((state) => state.pokemonReducer);
 
   const [searchPokemon, setSearchPokemon] = useState<string>('');
-  const [selectedType, setSelectedType] = useState<any>('');
+  const [selectedType, setSelectedType] = useState<string>('');
+  const [filteredPokemons, setFilteredPokemons] = useState<IPokemonTypes[]>([]);
+  const [currentFilteredTypePokemons, setCurrentFilteredTypePokemons] = useState<IPokemonTypes[]>([]);
+  const [stateCurrentPage, setStateCurrentPage] = useState<number>(0);
 
   useEffect(() => {
-    if (pokemonsArray.length < 9) {
+    if (pokemonCurrentType?.name) {
+      setSelectedType(pokemonCurrentType.name);
+    } else {
+      setSelectedType(constants.FILTER_BY_TYPE);
+    }
+  }, [pokemonCurrentType?.name]);
+
+  useEffect(() => {
+    setStateCurrentPage(currentPage);
+  }, [currentPage]);
+
+  useEffect(() => {
+    if (!pokemonsArray.length) {
       dispatch(fetchPokemonTypes());
-      dispatch(fetchPokemons(currentPage));
+      dispatch(fetchPokemons(stateCurrentPage));
     }
   }, []);
 
   useEffect(() => {
-    if (pokemons && !pokemonsArray.length) {
+    setFilteredPokemons(pokemonCurrentType?.pokemon);
+  }, [pokemonCurrentType?.name, stateCurrentPage]);
+
+  useEffect(() => {
+    setCurrentFilteredTypePokemons(pokemonCurrentType?.pokemon?.slice(stateCurrentPage * 9, stateCurrentPage * 9 + 9));
+  }, [filteredPokemons, stateCurrentPage]);
+
+  useEffect(() => {
+    if (currentFilteredTypePokemons?.length && !pokemonsArray.length) {
+      currentFilteredTypePokemons?.map((pokemon) => {
+        dispatch(fetchPokemon(pokemon.pokemon.name));
+        dispatch(fetchPokemonSpecies(pokemon.pokemon.name));
+      });
+    }
+  }, [currentFilteredTypePokemons]);
+
+  useEffect(() => {
+    if (pokemons && !pokemonsArray.length && !currentFilteredTypePokemons?.length) {
       pokemons.results.map((pokemon) => {
         dispatch(fetchPokemon(pokemon.name));
         dispatch(fetchPokemonSpecies(pokemon.name));
@@ -58,13 +102,20 @@ export const MainPage: FC = () => {
 
   const count = pokemons?.count;
   const changePokemonsPageHandler = (page: number) => {
+    setStateCurrentPage(page);
     dispatch(setCurrentPage(page));
     dispatch(fetchPokemons(page));
   };
 
   const setSelectedTypeHandler = (keys: any) => {
-    dispatch(fetchPokemonType(keys.currentKey));
+    dispatch(fetchPokemonByType(keys.currentKey));
     setSelectedType(keys.currentKey);
+  };
+
+  const clearSelectedTypeHandler = () => {
+    dispatch(clearPokemonType());
+    dispatch(fetchPokemons(0));
+    setSelectedType(constants.FILTER_BY_TYPE);
   };
 
   return (
@@ -77,33 +128,44 @@ export const MainPage: FC = () => {
         placeholder='Search pokemon'
         onChange={(e) => setSearchPokemon(e.target.value)}
       />
-      <Dropdown>
-        <Dropdown.Button
-          flat
+      <div className='main-page-buttons'>
+        <Dropdown>
+          <Dropdown.Button
+            flat
+            color='primary'
+            css={{ tt: 'uppercase' }}
+          >
+            {selectedType}
+          </Dropdown.Button>
+          <Dropdown.Menu
+            aria-label='Single selection actions'
+            color='primary'
+            disallowEmptySelection
+            selectionMode='single'
+            selectedKeys={selectedType}
+            onSelectionChange={(keys: Selection) => setSelectedTypeHandler(keys)}
+          >
+            {useMemo(() => pokemonTypes?.map((type) => {
+              return <Dropdown.Item key={type.name}>{type.name}</Dropdown.Item>;
+            }), [pokemonTypes])}
+          </Dropdown.Menu>
+        </Dropdown>
+        <Button
           color='primary'
-          css={{ tt: 'uppercase', margin: '10px auto 0 auto' }}
+          auto
+          disabled={!pokemonCurrentType?.name}
+          onClick={clearSelectedTypeHandler}
         >
-          Filter by type
-        </Dropdown.Button>
-        <Dropdown.Menu
-          aria-label='Single selection actions'
-          color='primary'
-          disallowEmptySelection
-          selectionMode='single'
-          selectedKeys={selectedType}
-          onSelectionChange={(keys: any) => setSelectedTypeHandler(keys)}
-        >
-          {useMemo(() => pokemonTypes?.map((type) => {
-            return <Dropdown.Item key={type.name}>{type.name}</Dropdown.Item>;
-          }), [pokemonTypes])}
-        </Dropdown.Menu>
-      </Dropdown>
-      <PokemonList />
+          Clear filters
+        </Button>
+      </div>
+      <PokemonList searchPokemon={searchPokemon}/>
       <footer className='main-page-pagination'>
         {!searchPokemon && (
           <Pagination
-            total={Math.ceil(count / 9)}
-            initialPage={currentPage + 1}
+            total={Math.ceil(filteredPokemons ? filteredPokemons.length / 9 : count / 9)}
+            initialPage={stateCurrentPage + 1}
+            page={stateCurrentPage + 1}
             onChange={(page) => changePokemonsPageHandler(page - 1)}
           />
         )}
