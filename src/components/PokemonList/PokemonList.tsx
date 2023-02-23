@@ -30,7 +30,7 @@ export const PokemonList: FC<IPokemonList> = ({
 
   return (
     <div className='pokemon-list-wrapper'>
-      {(isLoadingSearchedPokemon) && <Loading size='xl' />}
+      {(isLoading || isLoadingSearchedPokemon) && <Loading size='xl' />}
       <Grid.Container
         gap={2}
         css={{

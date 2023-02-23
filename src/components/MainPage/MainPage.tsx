@@ -123,6 +123,7 @@ export const MainPage: FC = () => {
       <Header />
       <Input
         className='main-page-search'
+        aria-label='input'
         width='100%'
         bordered
         placeholder='Search pokemon'
@@ -154,7 +155,8 @@ export const MainPage: FC = () => {
           color='primary'
           auto
           disabled={!pokemonCurrentType?.name}
-          onClick={clearSelectedTypeHandler}
+          onPress={clearSelectedTypeHandler}
+          aria-label='clear filters'
         >
           Clear filters
         </Button>
@@ -163,6 +165,7 @@ export const MainPage: FC = () => {
       <footer className='main-page-pagination'>
         {!searchPokemon && (
           <Pagination
+            aria-label='pagination'
             total={Math.ceil(filteredPokemons ? filteredPokemons.length / 9 : count / 9)}
             initialPage={stateCurrentPage + 1}
             page={stateCurrentPage + 1}
