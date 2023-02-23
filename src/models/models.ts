@@ -90,3 +90,13 @@ export interface IFetchPokemonSpecies {
     url: string;
   }
 }
+
+export interface IPokemonTypes {
+  pokemon: IPokemonPreview;
+  slot: number;
+}
+
+export interface IFetchPokemonTypes {
+  name: string;
+  pokemon: IPokemonTypes[];
+}
