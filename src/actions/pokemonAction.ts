@@ -1,17 +1,11 @@
 import { Dispatch } from '@reduxjs/toolkit';
 import { pokemonSlice } from '../reducers/pokemonSlice';
-import axios from 'axios';
-import { IFetchPokemons, IPokemon, IPokemonSpecies } from '../models/models';
-import { pokemonSpeciesSlice } from '../reducers/pokemonSpeciesSlice';
-
-const instance = axios.create({
-  baseURL: 'https://pokeapi.co/api/v2',
-});
+import * as API from '../api/api';
 
 export const fetchPokemons = (page: number = 0) => async (dispatch: Dispatch) => {
   try {
     dispatch(pokemonSlice.actions.pokemonsPending());
-    const response = await instance.get<IFetchPokemons>(`/pokemon/?offset=${page * 9}&limit=9`);
+    const response = await API.fetchPokemonsAPI(page);
     dispatch(pokemonSlice.actions.fetchPokemonsSuccess(response.data));
   } catch (e) {
     dispatch(pokemonSlice.actions.pokemonError(e));
@@ -21,45 +15,38 @@ export const fetchPokemons = (page: number = 0) => async (dispatch: Dispatch) =>
 export const fetchPokemon = (name: string) => async (dispatch: Dispatch) => {
   try {
     dispatch(pokemonSlice.actions.pokemonsPending());
-    const response = await instance.get<IPokemon>(`/pokemon/${name}`);
+    const response = await API.fetchPokemonAPI(name);
     dispatch(pokemonSlice.actions.fetchPokemonSuccess(response.data));
   } catch (e) {
     dispatch(pokemonSlice.actions.pokemonError(e));
   }
 };
 
-export const fetchSearchPokemon = (name: string) => async (dispatch: Dispatch) => {
-  try {
-    dispatch(pokemonSlice.actions.pokemonsPending());
-    if (name) {
-      const foundedPokemon = await instance.get<IPokemon>(`/pokemon/${name}`);
-      const foundedSpecies = await instance.get<IPokemonSpecies>(`/pokemon-species/${name}/`);
-      dispatch(pokemonSlice.actions.fetchSearchPokemonSuccess(foundedPokemon.data));
-      dispatch(pokemonSpeciesSlice.actions.fetchPokemonSpeciesSuccess(foundedSpecies.data));
-    }
-  } catch (e) {
-    dispatch(pokemonSlice.actions.searchPokemonError(e));
-  }
-};
-
 export const fetchPokemonTypes = () => async (dispatch: Dispatch) => {
   try {
     dispatch(pokemonSlice.actions.pokemonsPending());
-    const response = await instance.get<IFetchPokemons>('/type');
+    const response = await API.fetchPokemonTypeAPI();
     dispatch(pokemonSlice.actions.fetchPokemonTypesSuccess(response.data.results));
   } catch (e) {
-
+    dispatch(pokemonSlice.actions.pokemonError(e));
   }
 };
 
-export const fetchPokemonType = (name: string) => async (dispatch: Dispatch) => {
+export const fetchPokemonByType = (name: string) => async (dispatch: Dispatch) => {
   try {
     dispatch(pokemonSlice.actions.pokemonsPending());
-    const response = await instance.get<IFetchPokemons>(`/type/${name}`);
-    console.log(response.data);
-    dispatch(pokemonSlice.actions.fetchPokemonTypeSuccess(response.data));
+    const response = await API.fetchPokemonByTypeAPI(name);
+    dispatch(pokemonSlice.actions.fetchPokemonByTypeSuccess(response.data));
   } catch (e) {
+    dispatch(pokemonSlice.actions.pokemonError(e));
+  }
+};
 
+export const clearPokemonType = () => (dispatch: Dispatch) => {
+  try {
+    dispatch(pokemonSlice.actions.clearPokemonTypeSuccess());
+  } catch (e) {
+    dispatch(pokemonSlice.actions.pokemonError(e));
   }
 };
 

@@ -1,18 +1,16 @@
 import {
   IFetchPokemons,
+  IFetchPokemonTypes,
   IPokemon,
   IPokemonPreview,
-  IPokemonSpecies,
 } from '../models/models';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface IPokemonState {
   pokemons: IFetchPokemons | null;
   pokemonsArray: IPokemon[];
-  pokemonsSpecies: IPokemonSpecies[];
-  pokemonEvolutionChain: IPokemon[];
   pokemonTypes: IPokemonPreview[];
-  pokemonType: any;
+  pokemonCurrentType: IFetchPokemonTypes;
   currentPage: number;
   isLoading: boolean;
   error: string;
@@ -21,10 +19,8 @@ export interface IPokemonState {
 const initialState: IPokemonState = {
   pokemons: null,
   pokemonsArray: [],
-  pokemonsSpecies: [],
-  pokemonEvolutionChain: [],
   pokemonTypes: [],
-  pokemonType: null,
+  pokemonCurrentType: null,
   currentPage: 0,
   isLoading: false,
   error: '',
@@ -36,8 +32,6 @@ export const pokemonSlice = createSlice({
   reducers: {
     fetchPokemonsSuccess(state, action: PayloadAction<IFetchPokemons>) {
       state.pokemonsArray = [];
-      state.pokemonsSpecies = [];
-      state.pokemonEvolutionChain = [];
       state.pokemons = action.payload;
       state.error = '';
       state.isLoading = false;
@@ -49,28 +43,10 @@ export const pokemonSlice = createSlice({
           state.pokemonsArray.find((item) => item.name !== action.payload.name))
       ) {
         const pokemonsSort = [...state.pokemonsArray, action.payload].sort(
-          (a, b) => (a.id > b.id ? 1 : -1)
+          (a, b) => (a.id > b.id ? 1 : -1),
         );
         state.pokemonsArray = pokemonsSort;
       }
-      state.error = '';
-      state.isLoading = false;
-    },
-    fetchPokemonSpeciesSuccess(state, action: PayloadAction<IPokemonSpecies>) {
-      state.pokemonsSpecies = [...state.pokemonsSpecies, action.payload];
-      state.error = '';
-      state.isLoading = false;
-    },
-    fetchSearchPokemonSuccess(state, action: PayloadAction<IPokemon>) {
-      state.pokemonsArray = [action.payload];
-      state.error = '';
-      state.isLoading = false;
-    },
-    fetchPokemonEvolutionChainSuccess(
-      state,
-      action: PayloadAction<IPokemon[]>,
-    ) {
-      state.pokemonEvolutionChain = action.payload;
       state.error = '';
       state.isLoading = false;
     },
@@ -78,12 +54,19 @@ export const pokemonSlice = createSlice({
       state.pokemonTypes = action.payload;
       state.isLoading = false;
     },
-    fetchPokemonTypeSuccess(state, action: PayloadAction<any>) {
-      state.pokemons = action.payload.pokemon;
+    fetchPokemonByTypeSuccess(state, action: PayloadAction<IFetchPokemonTypes>) {
+      state.pokemonsArray = [];
+      state.currentPage = 0;
+      state.pokemonCurrentType = action.payload;
       state.isLoading = false;
     },
     setCurrentPageSuccess(state, action: PayloadAction<number>) {
+      state.pokemonsArray = [];
       state.currentPage = action.payload;
+    },
+    clearPokemonTypeSuccess(state) {
+      state.currentPage = 0;
+      state.pokemonCurrentType = null;
     },
     pokemonsPending(state) {
       state.isLoading = true;
@@ -91,14 +74,6 @@ export const pokemonSlice = createSlice({
     },
     pokemonError(state, action: PayloadAction<string>) {
       state.pokemonsArray = [];
-      state.error = action.payload;
-      state.isLoading = false;
-    },
-    pokemonSpeciesError(state) {
-      state.pokemonEvolutionChain = [];
-      state.isLoading = false;
-    },
-    searchPokemonError(state, action: PayloadAction<string>) {
       state.error = action.payload;
       state.isLoading = false;
     },
@@ -111,13 +86,9 @@ export const pokemonSlice = createSlice({
 
 export const {
   fetchPokemonsSuccess,
-  fetchSearchPokemonSuccess,
-  fetchPokemonSpeciesSuccess,
-  fetchPokemonEvolutionChainSuccess,
   pokemonsPending,
   fetchPokemonSuccess,
   pokemonError,
-  pokemonSpeciesError,
 } = pokemonSlice.actions;
 
 export default pokemonSlice.reducer;

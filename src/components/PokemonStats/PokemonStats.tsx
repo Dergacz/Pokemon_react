@@ -9,7 +9,7 @@ import heightLogo from '../../../public/images/height.png';
 import { IPokemonStats } from './PokemonStats.types';
 
 // constants
-import * as constants from '../../constants/constatns';
+import * as constants from '../../constants/constants';
 
 // utils
 import { setColor } from '../../../utils/setColor';
@@ -71,7 +71,7 @@ export const PokemonStats: FC<IPokemonStats> = ({ pokemon, color }) => (
       <div className='pokemon-stats-values'>
         {pokemon.stats.map((stat) => {
           const [{ reduction }] = constants.REDUCTION_TITLES.filter(
-            (title) => title?.title === stat?.stat.name
+            (title) => title?.title === stat?.stat.name,
           );
           return (
             <div className='pokemon-stats-value' key={stat.stat.name}>

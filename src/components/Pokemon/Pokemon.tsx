@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState, useMemo } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 // components
@@ -9,37 +9,37 @@ import { PokemonEvolutions } from '../PokemonEvolutions/PokemonEvolutions';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 
 // actions
-import {
-  fetchPokemonEvolutionChain,
-} from '../../actions/actionCreaters';
 
 // images
 import arrowChange from '../../../public/images/arrow_right.png';
 import arrowLogo from '../../../public/images/arrow.png';
 import defaultPokemon from '../../../public/images/pokemon-default.png';
+import { fetchPokemonEvolutionChainAction } from '../../actions/pokemonEvolutionAction';
 
 export const Pokemon: FC = () => {
   const dispatch = useAppDispatch();
-  const { pokemonsArray, pokemonEvolutionChain, pokemonsSpecies } =
-    useAppSelector((state) => state.pokemonReducer);
+  const { pokemonsArray } = useAppSelector((state) => state.pokemonReducer);
+  const { pokemonsSpecies } = useAppSelector((state) => state.pokemonSpeciesReducer);
+  const { pokemonEvolutionChain } = useAppSelector((state) => state.pokemonEvolutionReducer);
+  const { searchedPokemon } = useAppSelector((state) => state.searchPokemonReducer);
   const { title } = useParams();
 
   const pokemonSpecies = useMemo(
     () => pokemonsSpecies?.find((p) => p.name === title),
-    [title]
+    [title],
   );
 
   const pokemonFromArray = useMemo(
     () => pokemonsArray?.find((p) => p.name === title),
-    [title]
+    [title],
   );
 
   const pokemonFromEvolutionChain = useMemo(
     () => pokemonEvolutionChain?.find((p) => p.name === title),
-    [title]
+    [title],
   );
 
-  const pokemon = pokemonFromArray || pokemonFromEvolutionChain;
+  const pokemon = pokemonFromArray || pokemonFromEvolutionChain || searchedPokemon;
 
   const { front_shiny: frontShiny = '', front_default: frontDefault } =
     pokemon.sprites?.other?.['official-artwork'];
@@ -55,7 +55,7 @@ export const Pokemon: FC = () => {
   }, [pokemonSpecies?.color.name]);
 
   useEffect(() => {
-    dispatch(fetchPokemonEvolutionChain(title, pokemonSpecies?.evolution_chain.url));
+    dispatch(fetchPokemonEvolutionChainAction(pokemonSpecies?.evolution_chain.url));
   }, []);
 
   const onChangePokemonDescription = () => {
@@ -73,10 +73,7 @@ export const Pokemon: FC = () => {
   };
 
   return (
-    <div
-      className='pokemon-wrapper'
-      style={{ height: '100vh', display: 'flex', alignItems: 'center' }}
-    >
+    <div className='pokemon-wrapper'>
       <div className={`pokemon-container background-${color || 'default'}`}>
         <div className='pokemon-header'>
           <div>
