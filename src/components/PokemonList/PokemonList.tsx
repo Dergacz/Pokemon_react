@@ -30,16 +30,17 @@ export const PokemonList: FC<IPokemonList> = ({
 
   return (
     <div className='pokemon-list-wrapper'>
-      {(isLoading && isLoadingSearchedPokemon) && <Loading size='xl' />}
+      {(isLoadingSearchedPokemon) && <Loading size='xl' />}
       <Grid.Container
         gap={2}
         css={{
           justifyContent:
-            error || searchedPokemon ? 'center' : 'space-between',
+            (error || searchError || searchedPokemon) ? 'center' : 'space-between',
         }}
       >
         {(!isLoading || !isLoadingSearchedPokemon) &&
           !error &&
+          !searchError &&
           currentPokemons.map((pokemon) => {
             const pokemonSpecies = pokemonsSpecies?.find(p => p.name === pokemon.name);
             return (

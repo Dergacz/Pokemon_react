@@ -29,6 +29,7 @@ export const searchPokemonSlice = createSlice({
       state.isLoading = false;
     },
     searchPokemonError(state, action: PayloadAction<string>) {
+      state.searchedPokemon = null;
       state.error = action.payload;
       state.isLoading = false;
     },

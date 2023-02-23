@@ -34,7 +34,6 @@ export const pokemonSlice = createSlice({
       state.pokemonsArray = [];
       state.pokemons = action.payload;
       state.error = '';
-      state.isLoading = false;
     },
     fetchPokemonSuccess(state, action: PayloadAction<IPokemon>) {
       if (
