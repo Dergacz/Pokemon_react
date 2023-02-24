@@ -115,7 +115,7 @@ export const Pokemon: FC = () => {
           </div>
         )}
         {isPokemonStats ? (
-          <PokemonStats pokemon={pokemon} color={color} />
+          <PokemonStats pokemon={pokemon} pokemonSpecies={pokemonSpecies} color={color} />
         ) : (
           <PokemonEvolutions
             pokemonEvolutionChain={pokemonEvolutionChain}

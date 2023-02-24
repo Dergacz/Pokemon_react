@@ -25,7 +25,7 @@ export const PokemonEvolutions: FC<IPokemonEvolution> = ({
           <div>
             <div className='evolution-pokemon'>
               <Link to={`/${pokemon.name}`}>
-                <img src={pokemon.sprites.other['official-artwork'].front_default || defaultPokemon} alt='pokemon-front' width={75} height={75}/>
+                <img src={pokemon.sprites.other['official-artwork'].front_default || defaultPokemon} alt='pokemon-front' width={85} height={85}/>
               </Link>
               <p className='evolution-name'>{pokemon.name}</p>
             </div>

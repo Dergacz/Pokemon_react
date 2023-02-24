@@ -56,6 +56,10 @@ export interface IPokemon {
 export interface IPokemonSpecies {
   name: string;
   color: IPokemonPreview;
+  flavor_text_entries: {
+    flavor_text: string;
+    language: IPokemonPreview;
+  }[];
   evolution_chain: {
     url: string;
   }
@@ -82,13 +86,6 @@ export interface IEvolutionChain {
 export interface IFetchEvolutionChain {
   id: number;
   chain: IEvolutionChain;
-}
-
-export interface IFetchPokemonSpecies {
-  name: string;
-  evolution_chain: {
-    url: string;
-  }
 }
 
 export interface IPokemonTypes {
