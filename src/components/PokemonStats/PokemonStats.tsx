@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Progress } from '@nextui-org/react';
 
 // images
@@ -15,21 +15,37 @@ import * as constants from '../../constants/constants';
 import { setColor } from '../../../utils/setColor';
 
 export const PokemonStats: FC<IPokemonStats> = ({ pokemon, color, pokemonSpecies }) => {
-  const flavorText = pokemonSpecies?.flavor_text_entries.filter(item => item.language.name === 'en');
+  const englishFavorText = useMemo(() => pokemonSpecies?.flavor_text_entries.filter(item => item.language.name === constants.EN), [pokemonSpecies?.name]);
+  
+  const [favorText, setFavorText] = useState<string>('');
+  const [isLongFavorText, setIsLongFavorText] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (englishFavorText) {
+      const clearFavorText = englishFavorText[0]?.flavor_text.replace(/[^A-Za-z0-9.é]/ig, ' ');
+      if (englishFavorText[0]?.flavor_text.length > 105) {
+        const arrName = clearFavorText.split('');
+        arrName.splice(105, 102);
+        arrName.push('...');
+        setFavorText(arrName.join(''));
+        setIsLongFavorText(true);
+      } else {
+        setFavorText(clearFavorText);
+      }
+    }
+  }, [englishFavorText]);
 
   return (
     <div className={`pokemon-stats-description border-${color || 'default'}`}>
       <div className='pokemon-stats-spell-wrapper'>
-        {pokemon.types.map((type) => {
-          return (
-            <div
-              key={type.type.name}
-              className={`pokemon-stats-spell background-${color || 'default'}`}
-            >
-              <span className='pokemon-stats-spell-name'>{type.type.name}</span>
-            </div>
-          );
-        })}
+        {pokemon.types.map((type) => (
+          <div
+            key={type.type.name}
+            className={`pokemon-stats-spell background-${color || 'default'}`}
+          >
+            <span className='pokemon-stats-spell-name'>{type.type.name}</span>
+          </div>
+        ))}
       </div>
       <h3 className={`pokemon-stats-about-title color-${color || 'default'}`}>
         About
@@ -67,8 +83,11 @@ export const PokemonStats: FC<IPokemonStats> = ({ pokemon, color, pokemonSpecies
           <p className='pokemon-stats-about-subtitle'>Movies</p>
         </div>
       </div>
-      <p className='pokemon-stats-flavor'>
-        {flavorText ? flavorText[0]?.flavor_text : ''}
+      <p
+        className='pokemon-stats-flavor'
+        title={isLongFavorText ? englishFavorText[0]?.flavor_text : null}
+      >
+        {favorText}
       </p>
       <div className='pokemon-stats-wrapper'>
         <h3 className={`pokemon-stats-title color-${color || 'default'}`}>
