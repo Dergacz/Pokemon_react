@@ -107,15 +107,15 @@
 }
 
 .background-yellow {
-  background-color: yellow;
+  background-color: #F9CF30;
 }
 
 .color-yellow {
-  color: yellow;
+  color: #F9CF30;
 }
 
 .border-yellow {
-  border-color: yellow !important;
+  border-color: #F9CF30 !important;
 }
 
 .background-default {
