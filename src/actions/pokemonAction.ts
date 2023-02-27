@@ -1,6 +1,7 @@
 import { Dispatch } from '@reduxjs/toolkit';
 import { pokemonSlice } from '../reducers/pokemonSlice';
 import * as API from '../api/api';
+import { IPokemon, IPokemonPreview } from '../models/models';
 
 export const fetchPokemons = (page: number = 0) => async (dispatch: Dispatch) => {
   try {
@@ -12,11 +13,17 @@ export const fetchPokemons = (page: number = 0) => async (dispatch: Dispatch) =>
   }
 };
 
-export const fetchPokemon = (name: string) => async (dispatch: Dispatch) => {
+export const fetchPokemon = (pokemons: IPokemonPreview[]) => async (dispatch: Dispatch) => {
   try {
     dispatch(pokemonSlice.actions.pokemonsPending());
-    const response = await API.fetchPokemonAPI(name);
-    dispatch(pokemonSlice.actions.fetchPokemonSuccess(response.data));
+    let response;
+    const pokemonsSort: IPokemon[] = [];
+    for (let i = 0; i < pokemons.length; i++) {
+      response = await API.fetchPokemonAPI(pokemons[i].name);
+      pokemonsSort.push(response.data);
+    }
+    pokemonsSort.sort((a, b) => (a.id > b.id ? 1 : -1));
+    dispatch(pokemonSlice.actions.fetchPokemonSuccess(pokemonsSort));
   } catch (e) {
     dispatch(pokemonSlice.actions.pokemonError(e));
   }

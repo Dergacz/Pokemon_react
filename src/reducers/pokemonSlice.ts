@@ -35,17 +35,8 @@ export const pokemonSlice = createSlice({
       state.pokemons = action.payload;
       state.error = '';
     },
-    fetchPokemonSuccess(state, action: PayloadAction<IPokemon>) {
-      if (
-        state.pokemonsArray.length < 9 &&
-        (state.pokemonsArray.length === 0 ||
-          state.pokemonsArray.find((item) => item.name !== action.payload.name))
-      ) {
-        const pokemonsSort = [...state.pokemonsArray, action.payload].sort(
-          (a, b) => (a.id > b.id ? 1 : -1),
-        );
-        state.pokemonsArray = pokemonsSort;
-      }
+    fetchPokemonSuccess(state, action: PayloadAction<IPokemon[]>) {
+      state.pokemonsArray = action.payload;
       state.error = '';
       state.isLoading = false;
     },
