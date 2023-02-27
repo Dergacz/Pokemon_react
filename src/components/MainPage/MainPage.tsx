@@ -6,7 +6,7 @@ import { PokemonList } from '../PokemonList/PokemonList';
 import { Header } from '../Header/Header';
 
 // types
-import { IPokemonTypes } from '../../models/models';
+import { IPokemonPreview, IPokemonTypes } from '../../models/models';
 import { Selection } from '@react-types/shared';
 
 // constants
@@ -25,7 +25,7 @@ import {
   fetchPokemonTypes,
   setCurrentPage,
 } from '../../actions/pokemonAction';
-import { fetchPokemonSpecies } from '../../actions/pokemonSpeciesAction';
+import { clearPokemonSpecies, fetchPokemonSpecies } from '../../actions/pokemonSpeciesAction';
 import { fetchSearchPokemon } from '../../actions/searchPokemonAction';
 
 export const MainPage: FC = () => {
@@ -58,6 +58,7 @@ export const MainPage: FC = () => {
 
   useEffect(() => {
     if (!pokemonsArray.length) {
+      dispatch(clearPokemonSpecies());
       dispatch(fetchPokemonTypes());
       dispatch(fetchPokemons(stateCurrentPage));
     }
@@ -73,19 +74,21 @@ export const MainPage: FC = () => {
 
   useEffect(() => {
     if (currentFilteredTypePokemons?.length && !pokemonsArray.length) {
-      currentFilteredTypePokemons?.map((pokemon) => {
-        dispatch(fetchPokemon(pokemon.pokemon.name));
-        dispatch(fetchPokemonSpecies(pokemon.pokemon.name));
+      const currentFilteredPokemons: IPokemonPreview[] = [];
+      currentFilteredTypePokemons.map(item => {
+        currentFilteredPokemons.push(item.pokemon);
+        dispatch(fetchPokemonSpecies(item.pokemon.name));
       });
+      dispatch(fetchPokemon(currentFilteredPokemons));
     }
   }, [currentFilteredTypePokemons]);
 
   useEffect(() => {
     if (pokemons && !pokemonsArray.length && !currentFilteredTypePokemons?.length) {
-      pokemons.results.map((pokemon) => {
-        dispatch(fetchPokemon(pokemon.name));
+      pokemons.results.map(pokemon => {
         dispatch(fetchPokemonSpecies(pokemon.name));
       });
+      dispatch(fetchPokemon(pokemons.results));
     }
   }, [pokemons, !searchPokemon]);
 
@@ -104,6 +107,7 @@ export const MainPage: FC = () => {
   const changePokemonsPageHandler = (page: number) => {
     setStateCurrentPage(page);
     dispatch(setCurrentPage(page));
+    dispatch(clearPokemonSpecies());
     dispatch(fetchPokemons(page));
   };
 
@@ -134,7 +138,7 @@ export const MainPage: FC = () => {
           <Dropdown.Button
             flat
             color='primary'
-            css={{ tt: 'uppercase' }}
+            css={{ tt: 'capitalize' }}
           >
             {selectedType}
           </Dropdown.Button>
@@ -147,7 +151,7 @@ export const MainPage: FC = () => {
             onSelectionChange={(keys: Selection) => setSelectedTypeHandler(keys)}
           >
             {useMemo(() => pokemonTypes?.map((type) => {
-              return <Dropdown.Item key={type.name}>{type.name}</Dropdown.Item>;
+              return <Dropdown.Item css={{ tt: 'capitalize' }} key={type.name}>{type.name}</Dropdown.Item>;
             }), [pokemonTypes])}
           </Dropdown.Menu>
         </Dropdown>
@@ -158,7 +162,7 @@ export const MainPage: FC = () => {
           onPress={clearSelectedTypeHandler}
           aria-label='clear filters'
         >
-          Clear filters
+          Clear Filters
         </Button>
       </div>
       <PokemonList searchPokemon={searchPokemon}/>

@@ -24,6 +24,10 @@ export const pokemonSpeciesSlice = createSlice({
       state.error = '';
       state.isLoading = false;
     },
+    clearPokemonSpeciesSuccess(state) {
+      state.pokemonsSpecies = [];
+      state.isLoading = false;
+    },
     fetchPokemonSpeciesPending(state) {
       state.error = '';
       state.isLoading = true;

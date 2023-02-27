@@ -11,3 +11,7 @@ export const fetchPokemonSpecies = (name: string) => async (dispatch: Dispatch) 
     dispatch(pokemonSpeciesSlice.actions.fetchPokemonSpeciesError(e));
   }
 };
+
+export const clearPokemonSpecies = () => (dispatch: Dispatch) => {
+  dispatch(pokemonSpeciesSlice.actions.clearPokemonSpeciesSuccess());
+};

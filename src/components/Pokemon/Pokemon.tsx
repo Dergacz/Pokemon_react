@@ -9,23 +9,32 @@ import { PokemonEvolutions } from '../PokemonEvolutions/PokemonEvolutions';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 
 // actions
+import { fetchPokemonEvolutionChainAction } from '../../actions/pokemonEvolutionAction';
+
+// types
+import { IPokemonSpecies } from '../../models/models';
 
 // images
 import arrowChange from '../../../public/images/arrow_right.png';
 import arrowLogo from '../../../public/images/arrow.png';
 import defaultPokemon from '../../../public/images/pokemon-default.png';
-import { fetchPokemonEvolutionChainAction } from '../../actions/pokemonEvolutionAction';
+import { clearSearchPokemonSpecies } from '../../actions/searchPokemonAction';
 
 export const Pokemon: FC = () => {
   const dispatch = useAppDispatch();
   const { pokemonsArray } = useAppSelector((state) => state.pokemonReducer);
   const { pokemonsSpecies } = useAppSelector((state) => state.pokemonSpeciesReducer);
-  const { pokemonEvolutionChain } = useAppSelector((state) => state.pokemonEvolutionReducer);
-  const { searchedPokemon } = useAppSelector((state) => state.searchPokemonReducer);
+  const { pokemonEvolutionChain, pokemonEvolutionChainSpecies } = useAppSelector((state) => state.pokemonEvolutionReducer);
+  const { searchedPokemon, searchedPokemonSpecies } = useAppSelector((state) => state.searchPokemonReducer);
   const { title } = useParams();
 
   const pokemonSpecies = useMemo(
     () => pokemonsSpecies?.find((p) => p.name === title),
+    [title],
+  );
+
+  const pokemonEvolutionSpecies = useMemo(
+    () => pokemonEvolutionChainSpecies?.find((p) => p.name === title),
     [title],
   );
 
@@ -44,19 +53,22 @@ export const Pokemon: FC = () => {
   const { front_shiny: frontShiny = '', front_default: frontDefault } =
     pokemon.sprites?.other?.['official-artwork'];
 
-  const [color, setColor] = useState<string>(pokemonSpecies?.color.name);
+  const [color, setColor] = useState<string>('');
+  const [currentPokemonSpecies, setCurrentPokemonSpecies] = useState<IPokemonSpecies>(null);
   const [isPokemonStats, setIsPokemonStats] = useState<boolean>(true);
   const [isShinyColor, setIsShinyColor] = useState<boolean>(false);
 
   useEffect(() => {
-    if (color) {
-      setColor(pokemonSpecies?.color.name);
-    }
-  }, [pokemonSpecies?.color.name]);
+    dispatch(fetchPokemonEvolutionChainAction(pokemonSpecies?.evolution_chain.url || searchedPokemonSpecies?.evolution_chain.url));
+    return () => {
+      dispatch(clearSearchPokemonSpecies());
+    };
+  }, []);
 
   useEffect(() => {
-    dispatch(fetchPokemonEvolutionChainAction(pokemonSpecies?.evolution_chain.url));
-  }, []);
+    setColor(pokemonSpecies?.color.name || pokemonEvolutionSpecies?.color.name || searchedPokemonSpecies?.color.name);
+    setCurrentPokemonSpecies(pokemonSpecies || pokemonEvolutionSpecies || searchedPokemonSpecies);
+  }, [pokemonSpecies?.name, pokemonEvolutionSpecies?.name, searchedPokemonSpecies?.name]);
 
   const onChangePokemonDescription = () => {
     setIsPokemonStats(!isPokemonStats);
@@ -115,7 +127,7 @@ export const Pokemon: FC = () => {
           </div>
         )}
         {isPokemonStats ? (
-          <PokemonStats pokemon={pokemon} pokemonSpecies={pokemonSpecies} color={color} />
+          <PokemonStats pokemon={pokemon} pokemonSpecies={currentPokemonSpecies} color={color} />
         ) : (
           <PokemonEvolutions
             pokemonEvolutionChain={pokemonEvolutionChain}
