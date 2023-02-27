@@ -2,12 +2,12 @@ import { Dispatch } from '@reduxjs/toolkit';
 import { IEvolvesTo } from '../models/models';
 import * as API from '../api/api';
 import { pokemonEvolutionSlice } from '../reducers/pokemonEvolutionSlice';
-import { pokemonSpeciesSlice } from '../reducers/pokemonSpeciesSlice';
 
 export const fetchPokemonEvolutionChainAction = (url: string = '') => async (dispatch: Dispatch) => {
   try {
     dispatch(pokemonEvolutionSlice.actions.fetchPokemonEvolutionChainPending());
     const evolutionPokemon = [];
+    const pokemonSpecies = [];
     if (url) {
       const evolutionChain = await API.fetchPokemonEvolutionChainAPI(url);
       const handleNameSpecies = (evolves: IEvolvesTo) => {
@@ -37,17 +37,12 @@ export const fetchPokemonEvolutionChainAction = (url: string = '') => async (dis
         const pokemon = await API.fetchPokemonAPI(pokemons[i].name);
         const species = await API.fetchPokemonSpeciesAPI(pokemons[i].name);
         evolutionPokemon.push(pokemon.data);
-        dispatch(
-          pokemonSpeciesSlice.actions.fetchPokemonSpeciesSuccess(species.data),
-        );
+        pokemonSpecies.push(species.data);
       }
     }
+    dispatch(pokemonEvolutionSlice.actions.fetchPokemonEvolutionChainSpeciesSuccess(pokemonSpecies));
     if (evolutionPokemon.length > 1) {
-      dispatch(
-        pokemonEvolutionSlice.actions.fetchPokemonEvolutionChainSuccess(
-          evolutionPokemon,
-        ),
-      );
+      dispatch(pokemonEvolutionSlice.actions.fetchPokemonEvolutionChainSuccess(evolutionPokemon));
     } else {
       dispatch(pokemonEvolutionSlice.actions.fetchPokemonEvolutionChainSuccess([]));
     }

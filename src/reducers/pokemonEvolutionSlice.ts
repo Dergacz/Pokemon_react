@@ -1,16 +1,18 @@
 import {
-  IPokemon,
-} from '../models/models';
+  IPokemon, IPokemonSpecies
+} from "../models/models";
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface IPokemonEvolutionChain {
   pokemonEvolutionChain: IPokemon[];
+  pokemonEvolutionChainSpecies: IPokemonSpecies[];
   isLoading: boolean;
   error: string;
 }
 
 const initialState: IPokemonEvolutionChain = {
   pokemonEvolutionChain: [],
+  pokemonEvolutionChainSpecies: [],
   isLoading: false,
   error: '',
 };
@@ -25,6 +27,11 @@ export const pokemonEvolutionSlice = createSlice({
     },
     fetchPokemonEvolutionChainSuccess(state, action: PayloadAction<IPokemon[]>) {
       state.pokemonEvolutionChain = action.payload;
+      state.error = '';
+      state.isLoading = false;
+    },
+    fetchPokemonEvolutionChainSpeciesSuccess(state, action: PayloadAction<IPokemonSpecies[]>) {
+      state.pokemonEvolutionChainSpecies = action.payload;
       state.error = '';
       state.isLoading = false;
     },
