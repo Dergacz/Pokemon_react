@@ -16,7 +16,7 @@ export const PokemonList: FC<IPokemonList> = ({
 }) => {
   const { pokemons, pokemonsArray, isLoading, error } = useAppSelector((state) => state.pokemonReducer);
   const { pokemonsSpecies } = useAppSelector((state) => state.pokemonSpeciesReducer);
-  const { searchedPokemon, isLoading: isLoadingSearchedPokemon, error: searchError } = useAppSelector((state) => state.searchPokemonReducer);
+  const { searchedPokemon, searchedPokemonSpecies, isLoading: isLoadingSearchedPokemon, error: searchError } = useAppSelector((state) => state.searchPokemonReducer);
 
   const [currentPokemons, setCurrentPokemons] = useState<IPokemon[]>([]);
 
@@ -30,26 +30,31 @@ export const PokemonList: FC<IPokemonList> = ({
 
   return (
     <div className='pokemon-list-wrapper'>
-      {(isLoading || isLoadingSearchedPokemon) && <Loading size='xl' />}
-      <Grid.Container
-        gap={2}
-        css={{
-          justifyContent:
-            (error || searchError || searchedPokemon) ? 'center' : 'space-between',
-        }}
-      >
-        {(!isLoading || !isLoadingSearchedPokemon) &&
-          !error &&
-          !searchError &&
-          currentPokemons.map((pokemon) => {
-            const pokemonSpecies = pokemonsSpecies?.find(p => p.name === pokemon.name);
-            return (
-              <PokemonCard key={pokemon.name} name={pokemon.name} pokemon={pokemon} pokemonSpecies={pokemonSpecies} />
-            );
-          })}
-        {error && <h2>{error}</h2>}
-        {searchError && <h2>Invalid pokemon name</h2>}
-      </Grid.Container>
+      {
+        (isLoading || isLoadingSearchedPokemon) ? (
+          <Loading size='xl' />
+        ) : (
+          <>
+            <Grid.Container
+              gap={2}
+              css={{
+                justifyContent:
+                  (error || searchError || searchedPokemon) ? 'center' : 'space-between',
+              }}
+            >
+              {(!isLoading || !isLoadingSearchedPokemon) &&
+                !error &&
+                currentPokemons.map((pokemon) => {
+                  const pokemonSpecies = pokemonsSpecies?.find(p => p.name === pokemon.name);
+                  return (
+                    <PokemonCard key={pokemon.name} name={pokemon.name} pokemon={pokemon} pokemonSpecies={pokemonSpecies || searchedPokemonSpecies} />
+                  );
+                })}
+              {error && <h2>{error}</h2>}
+            </Grid.Container>
+          </>
+        )
+      }
     </div>
   );
 };
