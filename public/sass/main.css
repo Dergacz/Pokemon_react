@@ -378,9 +378,10 @@ body {
 }
 
 .header-wrapper {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  padding: 0 16px;
+  padding: 0 24px;
+  cursor: pointer;
 }
 .header-logo {
   width: 24px;

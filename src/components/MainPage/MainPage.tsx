@@ -124,7 +124,7 @@ export const MainPage: FC = () => {
 
   return (
     <>
-      <Header />
+      <Header setFirstPageHandler={currentPage !== 0 ? clearSelectedTypeHandler : undefined} />
       <Input
         className='main-page-search'
         aria-label='input'
