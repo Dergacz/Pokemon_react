@@ -51,6 +51,10 @@ export const searchPokemonSlice = createSlice({
 
 export const {
   fetchSearchPokemonSuccess,
+  fetchSearchPokemonSpeciesSuccess,
+  clearSearchPokemonSpeciesSuccess,
+  searchPokemonError,
+  fetchSearchPokemonPending,
 } = searchPokemonSlice.actions;
 
 export default searchPokemonSlice.reducer;

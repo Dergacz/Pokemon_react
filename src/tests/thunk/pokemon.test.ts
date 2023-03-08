@@ -1,9 +1,5 @@
-import {
-  fetchPokemon,
-  fetchPokemons,
-  fetchPokemonSpecies,
-  fetchSearchPokemon,
-} from '../../actions/actionCreaters';
+import { fetchPokemon, fetchPokemonByType, fetchPokemons, fetchPokemonTypes } from '../../actions/pokemonAction';
+import * as mock from '../mock';
 
 describe('fetch pokemons', () => {
   it('should fetch pokemons success', async () => {
@@ -17,23 +13,11 @@ describe('fetch pokemons', () => {
     expect(pending[0].payload).toBeFalsy();
     expect(pokemons[0].type).toBe('pokemon/fetchPokemonsSuccess');
   });
-
-  // it('should fetch pokemons error', async () => {
-  //   const thunk = fetchPokemons();
-  //   const dispatch = jest.fn();
-  //   await thunk(dispatch);
-  //   const { calls } = dispatch.mock;
-  //   expect(calls).toHaveLength(2);
-  //   const [start, end] = calls;
-  //   expect(start[0].type).toBe('pokemon/pokemonsPending');
-  //   expect(start[0].payload).toBeFalsy();
-  //   // expect(end[0].type).toBe('pokemon/fetchPokemonsError');
-  // });
 });
 
 describe('fetch pokemon', () => {
   it('should fetch pokemon success', async () => {
-    const thunk = fetchPokemon('pichu');
+    const thunk = fetchPokemon([mock.pokemonPreview]);
     const dispatch = jest.fn();
     await thunk(dispatch);
     const { calls } = dispatch.mock;
@@ -42,11 +26,11 @@ describe('fetch pokemon', () => {
     expect(pending[0].type).toBe('pokemon/pokemonsPending');
     expect(pending[0].payload).toBeFalsy();
     expect(pokemon[0].type).toBe('pokemon/fetchPokemonSuccess');
-    expect(pokemon[0].payload.name).toBe('pichu');
+    expect(pokemon[0].payload[0].name).toBe(mock.pokemonName);
   });
 
   it('should fetch pokemon error', async () => {
-    const thunk = fetchPokemon('wrongName');
+    const thunk = fetchPokemon([mock.wrongPokemonPreview]);
     const dispatch = jest.fn();
     await thunk(dispatch);
     const { calls } = dispatch.mock;
@@ -58,60 +42,45 @@ describe('fetch pokemon', () => {
   });
 });
 
-describe('fetch pokemon species', () => {
-  it('should fetch pokemon species success', async () => {
-    const thunk = fetchPokemonSpecies('pichu');
+describe('fetch pokemon types', () => {
+  it('should fetch pokemon types success', async () => {
+    const thunk = fetchPokemonTypes();
     const dispatch = jest.fn();
     await thunk(dispatch);
     const { calls } = dispatch.mock;
     expect(calls).toHaveLength(2);
-    const [pending, species] = calls;
+    const [pending, types] = calls;
     expect(pending[0].type).toBe('pokemon/pokemonsPending');
     expect(pending[0].payload).toBeFalsy();
-    expect(species[0].type).toBe('pokemon/fetchPokemonSpeciesSuccess');
-    expect(species[0].payload.name).toBe('pichu');
-  });
-
-  it('should fetch pokemon species error', async () => {
-    const thunk = fetchPokemonSpecies('wrongName');
-    const dispatch = jest.fn();
-    await thunk(dispatch);
-    const { calls } = dispatch.mock;
-    expect(calls).toHaveLength(2);
-    const [pending, error] = calls;
-    expect(pending[0].type).toBe('pokemon/pokemonsPending');
-    expect(pending[0].payload).toBeFalsy();
-    expect(error[0].type).toBe('pokemon/pokemonSpeciesError');
-    expect(error[0].payload.name).toBe('AxiosError');
+    expect(types[0].type).toBe('pokemon/fetchPokemonTypesSuccess');
+    expect(types[0].payload[0].name).toBeTruthy();
   });
 });
 
-describe('fetch search pokemon', () => {
-  it('should fetch search pokemon success', async () => {
-    const thunk = fetchSearchPokemon('pichu');
-    const dispatch = jest.fn();
-    await thunk(dispatch);
-    const { calls } = dispatch.mock;
-    expect(calls).toHaveLength(3);
-    const [pending, pokemon, species] = calls;
-    expect(pending[0].type).toBe('pokemon/pokemonsPending');
-    expect(pending[0].payload).toBeFalsy();
-    expect(pokemon[0].type).toBe('pokemon/fetchSearchPokemonSuccess');
-    expect(pokemon[0].payload.name).toBe('pichu');
-    expect(species[0].type).toBe('pokemon/fetchPokemonSpeciesSuccess');
-    expect(species[0].payload.id).toBe(172);
-  });
-
-  it('should fetch search pokemon error', async () => {
-    const thunk = fetchSearchPokemon('wrongName');
+describe('fetch pokemon by type', () => {
+  it('should fetch pokemon by type success', async () => {
+    const thunk = fetchPokemonByType(mock.pokemonTypeName);
     const dispatch = jest.fn();
     await thunk(dispatch);
     const { calls } = dispatch.mock;
     expect(calls).toHaveLength(2);
-    const [pending, error] = calls;
+    const [pending, type] = calls;
     expect(pending[0].type).toBe('pokemon/pokemonsPending');
     expect(pending[0].payload).toBeFalsy();
-    expect(error[0].type).toBe('pokemon/searchPokemonError');
-    expect(error[0].payload.name).toBe('AxiosError');
+    expect(type[0].type).toBe('pokemon/fetchPokemonByTypeSuccess');
+    expect(type[0].payload.name).toEqual(mock.pokemonTypeName);
+  });
+
+  it('should fetch pokemon by type error', async () => {
+    const thunk = fetchPokemonByType(mock.wrongPokemonName);
+    const dispatch = jest.fn();
+    await thunk(dispatch);
+    const { calls } = dispatch.mock;
+    expect(calls).toHaveLength(2);
+    const [pending, type] = calls;
+    expect(pending[0].type).toBe('pokemon/pokemonsPending');
+    expect(pending[0].payload).toBeFalsy();
+    expect(type[0].type).toBe('pokemon/pokemonError');
+    expect(type[0].payload.name).toEqual('AxiosError');
   });
 });

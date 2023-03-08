@@ -1,6 +1,7 @@
 import {
-  IPokemon, IPokemonSpecies
-} from "../models/models";
+  IPokemon,
+  IPokemonSpecies,
+} from '../models/models';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface IPokemonEvolutionChain {
@@ -44,6 +45,9 @@ export const pokemonEvolutionSlice = createSlice({
 
 export const {
   fetchPokemonEvolutionChainSuccess,
+  fetchPokemonEvolutionChainPending,
+  fetchPokemonEvolutionChainSpeciesSuccess,
+  fetchPokemonEvolutionChainError,
 } = pokemonEvolutionSlice.actions;
 
 export default pokemonEvolutionSlice.reducer;
