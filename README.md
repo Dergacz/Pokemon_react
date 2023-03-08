@@ -32,6 +32,7 @@ And many more, you can see them in `package.json`
 - List Pokemon
 - Detail Pokemon
 - Search Pokemon
+- Filter Pokemons
 - Evolutions of a Pokemon
 
 ## Get Started
