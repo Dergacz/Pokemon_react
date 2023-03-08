@@ -24,7 +24,7 @@ export const Pokemon: FC = () => {
   const dispatch = useAppDispatch();
   const { pokemonsArray } = useAppSelector((state) => state.pokemonReducer);
   const { pokemonsSpecies } = useAppSelector((state) => state.pokemonSpeciesReducer);
-  const { pokemonEvolutionChain, pokemonEvolutionChainSpecies } = useAppSelector((state) => state.pokemonEvolutionReducer);
+  const { pokemonEvolutionChain, pokemonEvolutionChainSpecies, isLoading: isChainLoading } = useAppSelector((state) => state.pokemonEvolutionReducer);
   const { searchedPokemon, searchedPokemonSpecies } = useAppSelector((state) => state.searchPokemonReducer);
   const { title } = useParams();
 
@@ -110,7 +110,8 @@ export const Pokemon: FC = () => {
           alt='pokemon'
           onClick={() => setIsShinyColor(frontShiny && !isShinyColor)}
         />
-        {!!pokemonEvolutionChain.length && (
+        {!!pokemonEvolutionChain.length &&
+          !isChainLoading && (
           <div className='pokemon-buttons-wrapper'>
             <img
               className='pokemon-arrow-change'
