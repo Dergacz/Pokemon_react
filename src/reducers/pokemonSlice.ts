@@ -78,6 +78,11 @@ export const {
   fetchPokemonsSuccess,
   pokemonsPending,
   fetchPokemonSuccess,
+  fetchPokemonTypesSuccess,
+  clearPokemonTypeSuccess,
+  fetchPokemonByTypeSuccess,
+  setCurrentPageSuccess,
+  clearErrorSuccess,
   pokemonError,
 } = pokemonSlice.actions;
 

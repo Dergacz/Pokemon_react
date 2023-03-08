@@ -1,20 +1,19 @@
 import pokemonReducer, {
+  clearErrorSuccess,
+  clearPokemonTypeSuccess,
+  fetchPokemonByTypeSuccess,
   fetchPokemonsSuccess,
-  fetchSearchPokemonSuccess,
-  fetchPokemonSpeciesSuccess,
-  fetchPokemonEvolutionChainSuccess,
-  pokemonsPending,
-  fetchPokemonSuccess,
+  fetchPokemonSuccess, fetchPokemonTypesSuccess,
   pokemonError,
-  pokemonSpeciesError,
+  pokemonsPending, setCurrentPageSuccess,
 } from '../../reducers/pokemonSlice';
 import {
+  currentPagePayload,
   errorPayload,
   fetchPokemonsPayload,
-  pokemonEvolutionChainPayload,
   pokemonPayload,
-  pokemonSliceInitialState,
-  pokemonSpeciesPayload,
+  pokemonSliceInitialState, pokemonTypeName,
+  pokemonTypePreview,
 } from '../mock';
 
 describe('pokemonSlice', () => {
@@ -39,40 +38,55 @@ describe('pokemonSlice', () => {
   it('should fetch pokemon success', () => {
     const action = {
       type: fetchPokemonSuccess.type,
-      payload: pokemonPayload,
+      payload: [pokemonPayload],
     };
     const result = pokemonReducer(pokemonSliceInitialState, action);
     expect(result.pokemonsArray.length).toBeDefined();
     expect(result.pokemonsArray[0].name).toEqual('name');
   });
 
-  it('should fetch pokemon species success', () => {
+  it('should fetch pokemon types success', () => {
     const action = {
-      type: fetchPokemonSpeciesSuccess.type,
-      payload: pokemonSpeciesPayload,
+      type: fetchPokemonTypesSuccess.type,
+      payload: [pokemonTypePreview],
     };
     const result = pokemonReducer(pokemonSliceInitialState, action);
-    expect(result.pokemonsSpecies[0]).toBeDefined();
-    expect(result.pokemonsSpecies[0].color.name).toBeDefined();
+    expect(result.pokemonTypes.length).toBeDefined();
+    expect(result.pokemonTypes[0].name).toEqual(pokemonTypeName);
   });
 
-  it('should fetch search pokemon success', () => {
+  it('should fetch pokemon by type success', () => {
     const action = {
-      type: fetchSearchPokemonSuccess.type,
+      type: fetchPokemonByTypeSuccess.type,
       payload: pokemonPayload,
     };
     const result = pokemonReducer(pokemonSliceInitialState, action);
-    expect(result.pokemonsArray[0]).toBeDefined();
+    expect(result.pokemonsArray).toEqual([]);
+    expect(result.currentPage).toEqual(0);
+    expect(result.pokemonCurrentType.name).toEqual('name');
+    expect(result.isLoading).toBeFalsy();
   });
 
-  it('should pokemon evolution chain', () => {
+  it('should fetch current page success', () => {
     const action = {
-      type: fetchPokemonEvolutionChainSuccess.type,
-      payload: pokemonEvolutionChainPayload,
+      type: setCurrentPageSuccess.type,
+      payload: currentPagePayload,
     };
     const result = pokemonReducer(pokemonSliceInitialState, action);
-    expect(result.pokemonEvolutionChain[0]).toBeDefined();
+    expect(result.currentPage).toBeDefined();
+    expect(result.pokemonsArray).toEqual([]);
+    expect(result.currentPage).toEqual(1);
   });
+
+  it('should clear pokemon type success', () => {
+    const action = {
+      type: clearPokemonTypeSuccess.type,
+    };
+    const result = pokemonReducer(pokemonSliceInitialState, action);
+    expect(result.pokemonCurrentType).toBeNull();
+    expect(result.currentPage).toEqual(0);
+  });
+
 
   it('should pokemon pending', () => {
     const action = {
@@ -93,12 +107,12 @@ describe('pokemonSlice', () => {
     expect(result.error).toBeTruthy();
   });
 
-  it('should pokemon species error', () => {
+  it('should pokemon clear error', () => {
     const action = {
-      type: pokemonSpeciesError.type,
+      type: clearErrorSuccess.type,
     };
     const result = pokemonReducer(pokemonSliceInitialState, action);
     expect(result.isLoading).toBeFalsy();
-    expect(result.pokemonEvolutionChain[0]).toBeFalsy();
+    expect(result.error).toBeFalsy();
   });
 });
