@@ -10,7 +10,7 @@ export const instance = axios.create({
   baseURL: 'https://pokeapi.co/api/v2',
 });
 
-export const fetchPokemonsAPI = (page: number) => instance.get<IFetchPokemons>(`/pokemon/?offset=${page * 9}&limit=9`);
+export const fetchPokemonsAPI = (page: number, count: number) => instance.get<IFetchPokemons>(`/pokemon/?offset=${page * count}&limit=${count}`);
 export const fetchPokemonAPI = (name: string) => instance.get<IPokemon>(`/pokemon/${name}`);
 export const fetchPokemonSpeciesAPI = (name: string) => instance.get<IPokemonSpecies>(`/pokemon-species/${name}`);
 export const fetchPokemonTypeAPI = () => instance.get<IFetchPokemons>('/type');

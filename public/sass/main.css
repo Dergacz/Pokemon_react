@@ -147,6 +147,11 @@ body {
   margin: 0 auto;
   padding: 0 16px;
 }
+@media (min-width: 320px) and (max-width: 767px) {
+  .container {
+    overflow-x: hidden;
+  }
+}
 
 .main-page-buttons {
   display: flex;
@@ -158,6 +163,11 @@ body {
 }
 .main-page-pagination {
   text-align: center;
+}
+@media (min-width: 320px) and (max-width: 767px) {
+  .main-page-pagination {
+    margin-bottom: 15px;
+  }
 }
 
 .pokemon-list-wrapper {
@@ -193,6 +203,11 @@ body {
   display: flex;
   align-items: center;
 }
+@media (min-width: 320px) and (max-width: 399px) {
+  .pokemon-wrapper {
+    height: auto;
+  }
+}
 .pokemon-container {
   width: 500px;
   height: 728px;
@@ -202,10 +217,23 @@ body {
   align-items: center;
   justify-content: space-between;
   border-radius: 16px;
-  position: relative;
   background-image: url("../images/opacity_pokeball.png");
   background-repeat: no-repeat;
   background-position: 95% 3%;
+}
+@media (min-width: 320px) and (max-width: 767px) {
+  .pokemon-container {
+    height: auto;
+  }
+}
+.pokemon-header-wrapper {
+  width: 100%;
+  min-height: 234px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
 }
 .pokemon-header {
   display: flex;
@@ -237,11 +265,10 @@ body {
   cursor: pointer;
 }
 .pokemon-buttons-wrapper {
+  width: 100%;
   display: flex;
   justify-content: space-between;
-  width: 100%;
   align-items: end;
-  height: 23%;
   padding: 0 15px;
 }
 .pokemon-buttons-wrapper :first-child {
@@ -250,6 +277,24 @@ body {
 .pokemon-arrow-change {
   padding: 10px;
   cursor: pointer;
+}
+.pokemon-information {
+  background-color: #FFFFFF;
+  border: 4px solid #FFFFFF;
+  border-radius: 8px;
+  width: 100%;
+  height: 500px;
+  padding: 50px 20px 44px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+@media (min-width: 320px) and (max-width: 767px) {
+  .pokemon-information {
+    min-height: 520px;
+    height: auto;
+    justify-content: space-between;
+  }
 }
 
 .pokemon-stats-description {
@@ -262,6 +307,12 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+@media (min-width: 320px) and (max-width: 767px) {
+  .pokemon-stats-description {
+    min-height: 500px;
+    height: auto;
+  }
 }
 .pokemon-stats-spell-wrapper {
   display: flex;
@@ -344,6 +395,11 @@ body {
 .pokemon-stats-progress {
   width: 80%;
 }
+@media (min-width: 320px) and (max-width: 767px) {
+  .pokemon-stats-progress {
+    width: 70%;
+  }
+}
 
 .evolution-wrapper {
   background-color: #FFFFFF;
@@ -357,10 +413,12 @@ body {
   text-align: center;
 }
 .evolution-chain {
-  height: 75%;
+  width: 100%;
+  height: auto;
+  min-height: 60%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
   flex-wrap: wrap;
 }
 .evolution-level {
@@ -375,6 +433,9 @@ body {
 }
 .evolution-name {
   text-transform: capitalize;
+}
+.evolution-switch {
+  text-align: center;
 }
 
 .header-wrapper {

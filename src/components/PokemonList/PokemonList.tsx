@@ -17,6 +17,7 @@ export const PokemonList: FC<IPokemonList> = ({
   const { pokemons, pokemonsArray, isLoading, error } = useAppSelector((state) => state.pokemonReducer);
   const { pokemonsSpecies } = useAppSelector((state) => state.pokemonSpeciesReducer);
   const { searchedPokemon, searchedPokemonSpecies, isLoading: isLoadingSearchedPokemon, error: searchError } = useAppSelector((state) => state.searchPokemonReducer);
+  const { appAgent } = useAppSelector((state) => state.appAgentReducer);
 
   const [currentPokemons, setCurrentPokemons] = useState<IPokemon[]>([]);
 
@@ -47,7 +48,13 @@ export const PokemonList: FC<IPokemonList> = ({
                 currentPokemons.map((pokemon) => {
                   const pokemonSpecies = pokemonsSpecies?.find(p => p.name === pokemon.name);
                   return (
-                    <PokemonCard key={pokemon.name} name={pokemon.name} pokemon={pokemon} pokemonSpecies={pokemonSpecies || searchedPokemonSpecies} />
+                    <PokemonCard
+                      key={pokemon.name}
+                      name={pokemon.name}
+                      pokemon={pokemon}
+                      pokemonSpecies={pokemonSpecies || searchedPokemonSpecies}
+                      appAgent={appAgent}
+                    />
                   );
                 })}
               {error && <h2>{error}</h2>}

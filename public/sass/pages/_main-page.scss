@@ -12,5 +12,8 @@
 
   &-pagination {
     text-align: center;
+    @include mobile {
+      margin-bottom: 15px;
+    }
   }
 }

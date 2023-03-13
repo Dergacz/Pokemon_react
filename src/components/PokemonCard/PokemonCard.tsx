@@ -11,16 +11,20 @@ import defaultPokemon from '../../../public/images/pokemon-default.png';
 // utils
 import { setColor } from '../../../utils/setColor';
 
+// constants
+import * as constants from '../../constants/constants';
+
 export const PokemonCard: FC<IPokemonCard> = ({
   name,
   pokemon,
   pokemonSpecies,
+  appAgent,
 }) => {
 
   const color = pokemonSpecies?.color.name;
 
   return (
-    <Grid xs={4} key={pokemon.id} css={{ justifyContent: 'center' }}>
+    <Grid xs={appAgent === constants.MOBILE ? 6 : 4} key={pokemon.id} css={{ justifyContent: 'center' }}>
       <Link to={name}>
         <Card
           className='pokemon-card-wrapper'

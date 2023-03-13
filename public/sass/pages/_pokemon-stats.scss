@@ -9,6 +9,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    @include mobile {
+      min-height: 500px;
+      height: auto;
+    }
   }
 
   &-spell-wrapper {
@@ -112,5 +116,8 @@
 
   &-progress {
     width: 80%;
+    @include mobile {
+      width: 70%;
+    }
   }
 }
