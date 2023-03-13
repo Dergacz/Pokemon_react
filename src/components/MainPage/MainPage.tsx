@@ -37,6 +37,9 @@ export const MainPage: FC = () => {
     pokemonTypes,
     pokemonCurrentType,
   } = useAppSelector((state) => state.pokemonReducer);
+  const { appAgent } = useAppSelector(state => state.appAgentReducer);
+
+  const pokemonCountOnPage = appAgent === constants.MOBILE ? 10 : 9;
 
   const [searchPokemon, setSearchPokemon] = useState<string>('');
   const [selectedType, setSelectedType] = useState<string>('');
@@ -57,19 +60,19 @@ export const MainPage: FC = () => {
   }, [currentPage]);
 
   useEffect(() => {
-    if (!pokemonsArray.length) {
+    if (!pokemonsArray.length && appAgent) {
       dispatch(clearPokemonSpecies());
       dispatch(fetchPokemonTypes());
-      dispatch(fetchPokemons(stateCurrentPage));
+      dispatch(fetchPokemons(stateCurrentPage, pokemonCountOnPage));
     }
-  }, []);
+  }, [appAgent]);
 
   useEffect(() => {
     setFilteredPokemons(pokemonCurrentType?.pokemon);
   }, [pokemonCurrentType?.name, stateCurrentPage]);
 
   useEffect(() => {
-    setCurrentFilteredTypePokemons(pokemonCurrentType?.pokemon?.slice(stateCurrentPage * 9, stateCurrentPage * 9 + 9));
+    setCurrentFilteredTypePokemons(pokemonCurrentType?.pokemon?.slice(stateCurrentPage * pokemonCountOnPage, stateCurrentPage * pokemonCountOnPage + pokemonCountOnPage));
   }, [filteredPokemons, stateCurrentPage]);
 
   useEffect(() => {
@@ -108,7 +111,7 @@ export const MainPage: FC = () => {
     setStateCurrentPage(page);
     dispatch(setCurrentPage(page));
     dispatch(clearPokemonSpecies());
-    dispatch(fetchPokemons(page));
+    dispatch(fetchPokemons(page, pokemonCountOnPage));
   };
 
   const setSelectedTypeHandler = (keys: any) => {
@@ -118,7 +121,7 @@ export const MainPage: FC = () => {
 
   const clearSelectedTypeHandler = () => {
     dispatch(clearPokemonType());
-    dispatch(fetchPokemons(0));
+    dispatch(fetchPokemons(0, pokemonCountOnPage));
     setSelectedType(constants.FILTER_BY_TYPE);
   };
 
@@ -170,7 +173,8 @@ export const MainPage: FC = () => {
         {!searchPokemon && (
           <Pagination
             aria-label='pagination'
-            total={Math.ceil(filteredPokemons ? filteredPokemons.length / 9 : count / 9)}
+            size={`${appAgent === constants.MOBILE ? 'sm' : 'md'}`}
+            total={Math.ceil(filteredPokemons ? filteredPokemons.length / pokemonCountOnPage : count / pokemonCountOnPage)}
             initialPage={stateCurrentPage + 1}
             page={stateCurrentPage + 1}
             onChange={(page) => changePokemonsPageHandler(page - 1)}

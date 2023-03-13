@@ -3,10 +3,10 @@ import { pokemonSlice } from '../reducers/pokemonSlice';
 import * as API from '../api/api';
 import { IPokemon, IPokemonPreview } from '../models/models';
 
-export const fetchPokemons = (page: number = 0) => async (dispatch: Dispatch) => {
+export const fetchPokemons = (page: number = 0, count: number = 9) => async (dispatch: Dispatch) => {
   try {
     dispatch(pokemonSlice.actions.pokemonsPending());
-    const response = await API.fetchPokemonsAPI(page);
+    const response = await API.fetchPokemonsAPI(page, count);
     dispatch(pokemonSlice.actions.fetchPokemonsSuccess(response.data));
   } catch (e) {
     dispatch(pokemonSlice.actions.pokemonError(e));
