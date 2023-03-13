@@ -13,11 +13,17 @@
   }
 
   &-chain {
-    height: 75%;
+    width: 100%;
+    height: auto;
+    min-height: 60%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-evenly;
     flex-wrap: wrap;
+    @include mobile {
+      //flex-direction: column;
+      //height: auto;
+    }
   }
 
   &-level {
@@ -27,6 +33,9 @@
 
   &-arrow {
     transform: rotate(180deg);
+    @include mobile {
+      //transform: rotate(270deg);
+    }
   }
 
   &-pokemon {
@@ -35,5 +44,9 @@
 
   &-name {
     text-transform: capitalize;
+  }
+
+  &-switch {
+    text-align: center;
   }
 }

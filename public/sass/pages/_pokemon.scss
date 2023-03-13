@@ -4,6 +4,9 @@
     height: 100vh;
     display: flex;
     align-items: center;
+    @include mobile-portrait {
+      height: auto;
+    }
   }
 
   &-container {
@@ -15,10 +18,22 @@
     align-items: center;
     justify-content: space-between;
     border-radius: 16px;
-    position: relative;
     background-image: url("../images/opacity_pokeball.png");
     background-repeat: no-repeat;
     background-position: 95% 3%;
+    @include mobile {
+      height: auto;
+    }
+  }
+
+  &-test {
+    width: 100%;
+    min-height: 234px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
   }
 
   &-header {
@@ -28,6 +43,9 @@
     width: 100%;
     padding: 24px 24px 0 24px;
     color: $white;
+    @include mobile {
+      //padding-top: 50px;
+    }
   }
 
   &-id {
@@ -57,11 +75,10 @@
   }
 
   &-buttons-wrapper {
+    width: 100%;
     display: flex;
     justify-content: space-between;
-    width: 100%;
     align-items: end;
-    height: 23%;
     padding: 0 15px;
     :first-child {
       transform: rotate(180deg);
@@ -71,5 +88,22 @@
   &-arrow-change {
     padding: 10px;
     cursor: pointer;
+  }
+
+  &-information {
+    background-color: $white;
+    border: 4px solid $white;
+    border-radius: 8px;
+    width: 100%;
+    height: 500px;
+    padding: 50px 20px 44px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    @include mobile {
+      min-height: 520px;
+      height: auto;
+      justify-content: space-between;
+    }
   }
 }
