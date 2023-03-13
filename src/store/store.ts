@@ -3,6 +3,7 @@ import pokemonReducer from '../reducers/pokemonSlice';
 import pokemonEvolutionReducer from '../reducers/pokemonEvolutionSlice';
 import pokemonSpeciesReducer from '../reducers/pokemonSpeciesSlice';
 import searchPokemonReducer from '../reducers/searchPokemonSlice';
+import appAgentReducer from '../reducers/appAgentSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     pokemonEvolutionReducer,
     pokemonSpeciesReducer,
     searchPokemonReducer,
+    appAgentReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
