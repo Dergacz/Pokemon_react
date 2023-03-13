@@ -15,14 +15,13 @@ export const appAgentSlice = createSlice({
   initialState,
   reducers: {
     setAppAgentSuccess(state, action: PayloadAction<string>) {
-      console.log(action.payload);
       state.appAgent = action.payload;
+      state.error = '';
+    },
+    setAppAgentError(state, action: PayloadAction<string>) {
+      state.error = action.payload;
     },
   },
 });
-
-export const {
-
-} = appAgentSlice.actions;
 
 export default appAgentSlice.reducer;

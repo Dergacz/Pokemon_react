@@ -4,4 +4,5 @@ export interface IPokemonCard {
   name: string;
   pokemon: IPokemon;
   pokemonSpecies: IPokemonSpecies;
+  appAgent: string;
 }

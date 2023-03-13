@@ -12,7 +12,7 @@ export const PokemonEvolutions: FC<IPokemonEvolution> = ({
   pokemonEvolutionChain,
   color,
 }) => (
-  <div className={`evolution-wrapper border-${color || 'default'}`}>
+  <>
     <h3 className={`evolution-title color-${color || 'default'}`}>Evolution</h3>
     <div className='evolution-chain'>
       {pokemonEvolutionChain.map((pokemon, index: number) => (
@@ -25,7 +25,7 @@ export const PokemonEvolutions: FC<IPokemonEvolution> = ({
           <div>
             <div className='evolution-pokemon'>
               <Link to={`/${pokemon.name}`}>
-                <img src={pokemon.sprites.other['official-artwork'].front_default || defaultPokemon} alt='pokemon-front' width={85} height={85}/>
+                <img src={pokemon.sprites.other['official-artwork'].front_default || defaultPokemon} alt='pokemon-front' width={80} height={80}/>
               </Link>
               <p className='evolution-name'>{pokemon.name}</p>
             </div>
@@ -33,5 +33,6 @@ export const PokemonEvolutions: FC<IPokemonEvolution> = ({
         </React.Fragment>
       ))}
     </div>
-  </div>
+    <h3 className='evolution-switch'>Click to switch to another Pokémon</h3>
+  </>
 );

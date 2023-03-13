@@ -16,6 +16,6 @@ export const setAppAgentAction = (width: number) => (dispatch: Dispatch) => {
     }
     dispatch(appAgentSlice.actions.setAppAgentSuccess(userAgent));
   } catch (e) {
-    console.log(e.message);
+    dispatch(appAgentSlice.actions.setAppAgentError(e.message));
   }
 };

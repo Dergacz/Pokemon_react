@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
-import { Progress } from '@nextui-org/react';
+import { Progress, useModal } from '@nextui-org/react';
 
 // images
 import weightLogo from '../../../public/images/weight.png';
@@ -13,17 +13,22 @@ import * as constants from '../../constants/constants';
 
 // utils
 import { setColor } from '../../../utils/setColor';
+import { useAppSelector } from '../../hooks/hooks';
+import { PokemonModal } from '../Modal/PokemonModal';
 
 export const PokemonStats: FC<IPokemonStats> = ({ pokemon, color, pokemonSpecies }) => {
+  const { appAgent } = useAppSelector(state => state.appAgentReducer);
   const englishFavorText = useMemo(() => pokemonSpecies?.flavor_text_entries.filter(item => item.language.name === constants.EN), [pokemonSpecies?.name]);
-  
+
   const [favorText, setFavorText] = useState<string>('');
   const [isLongFavorText, setIsLongFavorText] = useState<boolean>(false);
+
+  const { setVisible, bindings } = useModal();
 
   useEffect(() => {
     if (englishFavorText) {
       const clearFavorText = englishFavorText[0]?.flavor_text.replace(/[^A-Za-z0-9.é]/ig, ' ');
-      if (englishFavorText[0]?.flavor_text.length > 105) {
+      if (appAgent === constants.DESKTOP && englishFavorText[0]?.flavor_text.length > 105) {
         const arrName = clearFavorText.split('');
         arrName.splice(105, 102);
         arrName.push('...');
@@ -36,7 +41,7 @@ export const PokemonStats: FC<IPokemonStats> = ({ pokemon, color, pokemonSpecies
   }, [englishFavorText]);
 
   return (
-    <div className={`pokemon-stats-description border-${color || 'default'}`}>
+    <>
       <div className='pokemon-stats-spell-wrapper'>
         {pokemon.types.map((type) => (
           <div
@@ -83,12 +88,18 @@ export const PokemonStats: FC<IPokemonStats> = ({ pokemon, color, pokemonSpecies
           <p className='pokemon-stats-about-subtitle'>Movies</p>
         </div>
       </div>
-      <p
-        className='pokemon-stats-flavor'
-        title={isLongFavorText ? englishFavorText[0]?.flavor_text : null}
-      >
-        {favorText}
-      </p>
+      {
+        appAgent === constants.DESKTOP ? (
+          <p
+            className='pokemon-stats-flavor'
+            title={isLongFavorText ? englishFavorText[0]?.flavor_text : null}
+          >
+            {favorText}
+          </p>
+        ) : (
+          <PokemonModal color={color} setVisible={setVisible} bindings={bindings} pokemon={pokemon} favorText={favorText}/>
+        )
+      }
       <div className='pokemon-stats-wrapper'>
         <h3 className={`pokemon-stats-title color-${color || 'default'}`}>
           Base stats
@@ -119,7 +130,7 @@ export const PokemonStats: FC<IPokemonStats> = ({ pokemon, color, pokemonSpecies
           })}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
