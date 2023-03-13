@@ -5,6 +5,9 @@ export const WHITE = 'white';
 export const YELLOW = 'yellow';
 export const FILTER_BY_TYPE = 'Filter by type';
 export const EN = 'en';
+export const MOBILE = 'mobile';
+export const TABLET = 'tablet';
+export const DESKTOP = 'desktop';
 export const REDUCTION_TITLES = [
   { title: 'hp', reduction: 'hp' },
   { title: 'attack', reduction: 'atk' },
