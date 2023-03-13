@@ -226,7 +226,7 @@ body {
     height: auto;
   }
 }
-.pokemon-test {
+.pokemon-header-wrapper {
   width: 100%;
   min-height: 234px;
   display: flex;
